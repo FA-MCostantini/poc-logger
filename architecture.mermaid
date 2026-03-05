@@ -1,0 +1,67 @@
+graph TB
+    subgraph CONFIG["Configurazione Condivisa"]
+        YAML["config.yaml<br/>service, log level, keys"]
+        ENV[".env<br/>secrets, overrides"]
+    end
+
+    subgraph TS_LAMBDA["Lambda TypeScript"]
+        TS_H[Handler + Middy]
+        subgraph TS_PKG["@bper/lambda-obs (npm)"]
+            TS_F["Factory"]
+            TS_FMT["OTelLogFormatter"]
+        end
+        subgraph TS_DEPS["Dipendenze TS"]
+            PT_L["Powertools Logger"]
+            PT_T["Powertools Tracer"]
+            PT_M["Powertools Metrics"]
+            MIDDY["@middy/core"]
+        end
+    end
+
+    subgraph PHP_LAMBDA["Lambda PHP / Symfony"]
+        PHP_H[Handler + EventSubscriber]
+        subgraph PHP_PKG["bper/lambda-obs (composer)"]
+            PHP_F["BperLoggerFactory"]
+            PHP_FMT["OTelCloudWatchFormatter"]
+        end
+        subgraph PHP_DEPS["Dipendenze PHP"]
+            MONO["Monolog 3"]
+            OTEL_MONO["OTel Monolog Handler"]
+            OTEL_SDK["OpenTelemetry PHP SDK"]
+            SY_YAML["symfony/yaml"]
+        end
+    end
+
+    subgraph AWS["CloudWatch — Output unificato OTel JSON"]
+        CW["Logs Insights<br/>query cross-language"]
+        XRAY["X-Ray Traces<br/>PHP ↔ TS"]
+        EMF["Metrics EMF"]
+    end
+
+    YAML --> TS_F & PHP_F
+    ENV --> TS_F & PHP_F
+
+    TS_H --> TS_F
+    TS_F --> PT_L & PT_T & PT_M
+    TS_FMT --> PT_L
+    TS_H --> MIDDY
+
+    PHP_H --> PHP_F
+    PHP_F --> MONO
+    PHP_FMT --> MONO
+    MONO --> OTEL_MONO
+    PHP_F --> OTEL_SDK
+    PHP_F --> SY_YAML
+
+    PT_L --> CW
+    PT_T --> XRAY
+    PT_M --> EMF
+    OTEL_MONO --> CW
+    OTEL_SDK --> XRAY
+
+    style CONFIG fill:#2a2a4a,stroke:#88f,color:#fff
+    style TS_PKG fill:#2d5a27,stroke:#4a9,color:#fff
+    style PHP_PKG fill:#5a2d27,stroke:#e94,color:#fff
+    style AWS fill:#4a3a1a,stroke:#ea3,color:#fff
+    style TS_DEPS fill:#1a3a5c,stroke:#4a9,color:#fff
+    style PHP_DEPS fill:#5c1a1a,stroke:#e94,color:#fff
