@@ -1,0 +1,2 @@
+logger:
+  level: "INVALID_LEVEL"
