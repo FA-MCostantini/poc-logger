@@ -1,0 +1,86 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://bper.it/lambda-obs/config-schema.json",
+  "title": "BPER Lambda Obs Configuration",
+  "type": "object",
+  "required": ["service"],
+  "properties": {
+    "service": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Service name for OTel Resource"
+        },
+        "version": {
+          "type": "string",
+          "default": "0.0.0",
+          "description": "Service version (semver)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "logger": {
+      "type": "object",
+      "properties": {
+        "level": {
+          "type": "string",
+          "enum": ["DEBUG", "INFO", "WARN", "ERROR"],
+          "default": "INFO",
+          "description": "Log level. Override via env: POWERTOOLS_LOG_LEVEL"
+        },
+        "sampleRate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 1.0,
+          "description": "Log sampling rate (0.0 to 1.0)"
+        },
+        "persistentKeys": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {},
+          "description": "Key-value pairs added to every log record"
+        }
+      },
+      "additionalProperties": false,
+      "default": {}
+    },
+    "tracer": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "captureHTTPS": {
+          "type": "boolean",
+          "default": true
+        }
+      },
+      "additionalProperties": false,
+      "default": {}
+    },
+    "metrics": {
+      "type": "object",
+      "properties": {
+        "namespace": {
+          "type": "string",
+          "default": "Default",
+          "description": "CloudWatch Metrics namespace"
+        },
+        "captureColdStart": {
+          "type": "boolean",
+          "default": true
+        }
+      },
+      "additionalProperties": false,
+      "default": {}
+    }
+  },
+  "additionalProperties": false
+}

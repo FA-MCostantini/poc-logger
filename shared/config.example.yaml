@@ -1,0 +1,27 @@
+# BPER Lambda Obs — Configurazione condivisa
+# Identico per PHP e TypeScript
+#
+# Env overrides (12-factor):
+#   POWERTOOLS_LOG_LEVEL  -> logger.level
+#   POWERTOOLS_SERVICE_NAME -> service.name
+#   BPER_OBS_SAMPLE_RATE -> logger.sampleRate
+#   BPER_OBS_METRICS_NAMESPACE -> metrics.namespace
+
+service:
+  name: "bper-file-delivery"
+  version: "1.0.0"
+
+logger:
+  level: "INFO"
+  sampleRate: 0.1
+  persistentKeys:
+    team: "integrations"
+    partner: "athora"
+
+tracer:
+  enabled: true
+  captureHTTPS: true
+
+metrics:
+  namespace: "BPERFileDelivery"
+  captureColdStart: true
