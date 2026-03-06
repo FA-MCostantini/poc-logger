@@ -48,8 +48,8 @@ describe('loadConfig', () => {
   it('should override config with environment variables', () => {
     process.env['POWERTOOLS_LOG_LEVEL'] = 'ERROR';
     process.env['POWERTOOLS_SERVICE_NAME'] = 'env-service';
-    process.env['BPER_OBS_SAMPLE_RATE'] = '0.75';
-    process.env['BPER_OBS_METRICS_NAMESPACE'] = 'EnvNS';
+    process.env['Firstance_OBS_SAMPLE_RATE'] = '0.75';
+    process.env['Firstance_OBS_METRICS_NAMESPACE'] = 'EnvNS';
 
     const config = loadConfig({ configPath: path.join(FIXTURES, 'config.valid.yaml') });
     expect(config.service.name).toBe('env-service');

@@ -1,4 +1,4 @@
-# Schema Reference — BPER Lambda Obs
+# Schema Reference — Firstance Lambda Obs
 
 **Versione**: 1.0.0 | **Data**: 2026-03-06
 
@@ -26,7 +26,7 @@ File di configurazione condiviso tra TS e PHP. Schema JSON completo:
 | Campo | Tipo | Default | Descrizione |
 |---|---|---|---|
 | `logger.level` | `DEBUG\|INFO\|WARN\|ERROR` | `"INFO"` | Livello minimo di log. Override: `POWERTOOLS_LOG_LEVEL`. |
-| `logger.sampleRate` | `number` [0.0–1.0] | `1.0` | Percentuale di invocazioni in cui vengono emessi i log DEBUG. Override: `BPER_OBS_SAMPLE_RATE`. |
+| `logger.sampleRate` | `number` [0.0–1.0] | `1.0` | Percentuale di invocazioni in cui vengono emessi i log DEBUG. Override: `Firstance_OBS_SAMPLE_RATE`. |
 | `logger.persistentKeys` | `object<string,string>` | `{}` | Coppie chiave-valore aggiunte a ogni record in `Attributes`. |
 
 ### Sezione `tracer` (opzionale)
@@ -40,14 +40,14 @@ File di configurazione condiviso tra TS e PHP. Schema JSON completo:
 
 | Campo | Tipo | Default | Descrizione |
 |---|---|---|---|
-| `metrics.namespace` | `string` | `"Default"` | Namespace CloudWatch Metrics. Override: `BPER_OBS_METRICS_NAMESPACE`. |
+| `metrics.namespace` | `string` | `"Default"` | Namespace CloudWatch Metrics. Override: `Firstance_OBS_METRICS_NAMESPACE`. |
 | `metrics.captureColdStart` | `boolean` | `true` | Emette la metrica `ColdStart` automaticamente. |
 
 ### Esempio completo
 
 ```yaml
 service:
-  name: "bper-file-delivery"
+  name: "firstance-file-delivery"
   version: "1.0.0"
 
 logger:
@@ -62,7 +62,7 @@ tracer:
   captureHTTPS: true
 
 metrics:
-  namespace: "BPERFileDelivery"
+  namespace: "FirstanceFileDelivery"
   captureColdStart: true
 ```
 
@@ -75,10 +75,10 @@ L'override avviene dopo il parsing YAML e prima della validazione schema.
 
 | Variabile | Campo YAML | Tipo | Esempio |
 |---|---|---|---|
-| `POWERTOOLS_SERVICE_NAME` | `service.name` | `string` | `"bper-payment-gateway"` |
+| `POWERTOOLS_SERVICE_NAME` | `service.name` | `string` | `"firstance-payment-gateway"` |
 | `POWERTOOLS_LOG_LEVEL` | `logger.level` | `DEBUG\|INFO\|WARN\|ERROR` | `"DEBUG"` |
-| `BPER_OBS_SAMPLE_RATE` | `logger.sampleRate` | `float` (stringa → float) | `"0.05"` |
-| `BPER_OBS_METRICS_NAMESPACE` | `metrics.namespace` | `string` | `"BPERPayments"` |
+| `Firstance_OBS_SAMPLE_RATE` | `logger.sampleRate` | `float` (stringa → float) | `"0.05"` |
+| `Firstance_OBS_METRICS_NAMESPACE` | `metrics.namespace` | `string` | `"FirstancePayments"` |
 
 **Variabili di runtime Lambda** (non gestite dal ConfigLoader, lette direttamente):
 
@@ -101,10 +101,10 @@ produce un JSON single-line con questa struttura:
   "SeverityNumber": 9,
   "Body": "Documento elaborato con successo",
   "Resource": {
-    "service.name": "bper-file-delivery",
+    "service.name": "firstance-file-delivery",
     "service.version": "1.0.0",
     "service.language": "typescript",
-    "faas.name": "bper-file-delivery-prod",
+    "faas.name": "firstance-file-delivery-prod",
     "cloud.provider": "aws",
     "cloud.region": "eu-west-1"
   },
@@ -145,7 +145,7 @@ Emesso da `Metrics` (TS, via Powertools) e `EmfMetricsEmitter::putMetric()` (PHP
     "Timestamp": 1741257000123,
     "CloudWatchMetrics": [
       {
-        "Namespace": "BPERFileDelivery",
+        "Namespace": "FirstanceFileDelivery",
         "Dimensions": [["service", "partner"]],
         "Metrics": [
           {"Name": "DocumentsProcessed", "Unit": "Count"}
@@ -153,7 +153,7 @@ Emesso da `Metrics` (TS, via Powertools) e `EmfMetricsEmitter::putMetric()` (PHP
       }
     ]
   },
-  "service": "bper-file-delivery",
+  "service": "firstance-file-delivery",
   "partner": "athora",
   "DocumentsProcessed": 42.0
 }
@@ -167,13 +167,13 @@ Emesso da `Metrics` (TS, via Powertools) e `EmfMetricsEmitter::putMetric()` (PHP
     "Timestamp": 1741257000000,
     "CloudWatchMetrics": [
       {
-        "Namespace": "BPERFileDelivery",
+        "Namespace": "FirstanceFileDelivery",
         "Dimensions": [["service"]],
         "Metrics": [{"Name": "ColdStart", "Unit": "Count"}]
       }
     ]
   },
-  "service": "bper-file-delivery",
+  "service": "firstance-file-delivery",
   "ColdStart": 1.0
 }
 ```

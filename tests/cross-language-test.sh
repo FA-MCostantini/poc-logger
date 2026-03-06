@@ -7,16 +7,16 @@ ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 echo "=== Cross-Language OTel Output Test ==="
 echo ""
 
-# Prerequisite: bper-ts-test and bper-php-test images must be built first
-# docker build -t bper-ts-test -f packages/typescript/tests/Dockerfile packages/typescript
-# docker build -t bper-php-test -f packages/php/tests/Dockerfile packages/php
+# Prerequisite: firstance-ts-test and firstance-php-test images must be built first
+# docker build -t firstance-ts-test -f packages/typescript/tests/Dockerfile packages/typescript
+# docker build -t firstance-php-test -f packages/php/tests/Dockerfile packages/php
 
 echo "[1/4] Running TypeScript OTel log emission..."
 TS_OUTPUT=$(docker run --rm \
   -v "$ROOT_DIR/tests/emit-log-ts.ts:/app/emit-log.ts:ro" \
   -e AWS_REGION="" \
   -e _X_AMZN_TRACE_ID="" \
-  bper-ts-test npx tsx emit-log.ts 2>/dev/null | grep -v "^$" | tail -1)
+  firstance-ts-test npx tsx emit-log.ts 2>/dev/null | grep -v "^$" | tail -1)
 
 echo "TS output: $TS_OUTPUT"
 echo ""
@@ -26,7 +26,7 @@ PHP_OUTPUT=$(docker run --rm \
   -v "$ROOT_DIR/tests/emit-log-php.php:/app/emit-log.php:ro" \
   -e AWS_REGION="" \
   -e _X_AMZN_TRACE_ID="" \
-  bper-php-test php emit-log.php 2>/dev/null | grep -v "^$" | tail -1)
+  firstance-php-test php emit-log.php 2>/dev/null | grep -v "^$" | tail -1)
 
 echo "PHP output: $PHP_OUTPUT"
 echo ""

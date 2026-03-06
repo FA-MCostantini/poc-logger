@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Bper\LambdaObs\Tests\Unit\Tracer;
+namespace Firstance\LambdaObs\Tests\Unit\Tracer;
 
-use Bper\LambdaObs\Config\ConfigDTO;
-use Bper\LambdaObs\Tracer\XRayTracerFactory;
+use Firstance\LambdaObs\Config\ConfigDTO;
+use Firstance\LambdaObs\Tracer\XRayTracerFactory;
 use PHPUnit\Framework\TestCase;
 
 final class XRayTracerFactoryTest extends TestCase

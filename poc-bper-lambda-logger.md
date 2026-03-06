@@ -1,4 +1,4 @@
-# PoC — BPER Lambda Logger (PHP + TypeScript)
+# PoC — Firstance Lambda Logger (PHP + TypeScript)
 
 ## Cambio di prospettiva
 
@@ -8,7 +8,7 @@ Il progetto diventa **due pacchetti gemelli** con la stessa interfaccia concettu
 
 | | TypeScript (npm) | PHP (composer) |
 |---|---|---|
-| **Pacchetto** | `@bper/lambda-obs` | `bper/lambda-obs` |
+| **Pacchetto** | `@firstance/lambda-obs` | `firstance/lambda-obs` |
 | **Logger** | Powertools Logger | Monolog 3 |
 | **OTel bridge** | Custom LogFormatter | `open-telemetry/opentelemetry-logger-monolog` |
 | **Tracing** | Powertools Tracer (X-Ray) | OpenTelemetry PHP SDK + X-Ray |
@@ -37,7 +37,7 @@ Il progetto diventa **due pacchetti gemelli** con la stessa interfaccia concettu
 │  TypeScript       │    │  PHP (Symfony)                │
 │  Lambda           │    │  Lambda                      │
 │                   │    │                              │
-│  @bper/lambda-obs │    │  bper/lambda-obs             │
+│  @firstance/lambda-obs │    │  firstance/lambda-obs             │
 │  ┌──────────────┐ │    │  ┌────────────────────────┐  │
 │  │ Powertools   │ │    │  │ Monolog 3              │  │
 │  │ Logger       │ │    │  │ + OTel Monolog Handler │  │
@@ -67,7 +67,7 @@ Il progetto diventa **due pacchetti gemelli** con la stessa interfaccia concettu
 │  │   "SeverityText": "INFO",                           │  │
 │  │   "Body": "Polizza elaborata",                      │  │
 │  │   "Resource": {                                     │  │
-│  │     "service.name": "bper-file-delivery",           │  │
+│  │     "service.name": "firstance-file-delivery",           │  │
 │  │     "service.language": "php|typescript",           │  │
 │  │     "faas.name": "processPolizza"                   │  │
 │  │   },                                                │  │
@@ -128,7 +128,7 @@ Il progetto diventa **due pacchetti gemelli** con la stessa interfaccia concettu
 ```yaml
 # Identico per PHP e TypeScript
 service:
-  name: "bper-file-delivery"
+  name: "firstance-file-delivery"
   version: "1.2.0"
 
 logger:
@@ -143,7 +143,7 @@ tracer:
   captureHTTPS: true
 
 metrics:
-  namespace: "BPERFileDelivery"
+  namespace: "FirstanceFileDelivery"
   captureColdStart: true
 ```
 
@@ -153,10 +153,10 @@ metrics:
 
 ### TypeScript
 ```typescript
-import { createBperLogger } from '@bper/lambda-obs';
+import { createFirstanceLogger } from '@firstance/lambda-obs';
 import middy from '@middy/core';
 
-const obs = createBperLogger({ configPath: './config.yaml' });
+const obs = createFirstanceLogger({ configPath: './config.yaml' });
 
 const lambdaHandler = async (event: any) => {
     obs.logger.info('Polizza elaborata', { polizzaId: 'POL-001' });
@@ -169,9 +169,9 @@ export const handler = middy(lambdaHandler).use(obs.middleware());
 
 ### PHP
 ```php
-use Bper\LambdaObs\BperLoggerFactory;
+use Firstance\LambdaObs\FirstanceLoggerFactory;
 
-$obs = BperLoggerFactory::create(configPath: './config.yaml');
+$obs = FirstanceLoggerFactory::create(configPath: './config.yaml');
 
 // In un Symfony Command o Lambda handler:
 $obs->logger->info('Polizza elaborata', ['polizzaId' => 'POL-001']);
@@ -186,9 +186,9 @@ $obs->logger->error('Errore ISV', ['exception' => $e]);
 ## Struttura dei due pacchetti
 
 ```
-bper-lambda-obs/
+firstance-lambda-obs/
 ├── packages/
-│   ├── typescript/                    # @bper/lambda-obs (npm)
+│   ├── typescript/                    # @firstance/lambda-obs (npm)
 │   │   ├── src/
 │   │   │   ├── index.ts
 │   │   │   ├── config/
@@ -201,9 +201,9 @@ bper-lambda-obs/
 │   │   ├── package.json
 │   │   └── tsconfig.json
 │   │
-│   └── php/                           # bper/lambda-obs (composer)
+│   └── php/                           # firstance/lambda-obs (composer)
 │       ├── src/
-│       │   ├── BperLoggerFactory.php
+│       │   ├── FirstanceLoggerFactory.php
 │       │   ├── Config/
 │       │   │   ├── ConfigLoader.php
 │       │   │   └── ConfigSchema.php
@@ -259,7 +259,7 @@ bper-lambda-obs/
 
 ```
 fields @timestamp, Resource.`service.name`, SeverityText, Body, Attributes.polizzaId
-| filter Resource.`service.name` = "bper-file-delivery"
+| filter Resource.`service.name` = "firstance-file-delivery"
 | filter SeverityText = "ERROR"
 | sort @timestamp desc
 | limit 50

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Bper\LambdaObs;
+namespace Firstance\LambdaObs;
 
-use Bper\LambdaObs\Metrics\EmfMetricsEmitter;
-use Bper\LambdaObs\Tracer\XRayTracerFactory;
+use Firstance\LambdaObs\Metrics\EmfMetricsEmitter;
+use Firstance\LambdaObs\Tracer\XRayTracerFactory;
 use Monolog\Logger;
 
-final readonly class BperObservability
+final readonly class FirstanceObservability
 {
     public function __construct(
         public Logger $logger,

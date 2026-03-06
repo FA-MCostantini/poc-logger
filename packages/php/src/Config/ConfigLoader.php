@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bper\LambdaObs\Config;
+namespace Firstance\LambdaObs\Config;
 
 use Symfony\Component\Yaml\Yaml;
 
@@ -11,11 +11,11 @@ final class ConfigLoader
     private const ENV_MAPPINGS = [
         'POWERTOOLS_SERVICE_NAME' => ['service', 'name'],
         'POWERTOOLS_LOG_LEVEL' => ['logger', 'level'],
-        'BPER_OBS_SAMPLE_RATE' => ['logger', 'sampleRate'],
-        'BPER_OBS_METRICS_NAMESPACE' => ['metrics', 'namespace'],
+        'Firstance_OBS_SAMPLE_RATE' => ['logger', 'sampleRate'],
+        'Firstance_OBS_METRICS_NAMESPACE' => ['metrics', 'namespace'],
     ];
 
-    private const FLOAT_KEYS = ['BPER_OBS_SAMPLE_RATE'];
+    private const FLOAT_KEYS = ['Firstance_OBS_SAMPLE_RATE'];
 
     public static function load(string $configPath): ConfigDTO
     {

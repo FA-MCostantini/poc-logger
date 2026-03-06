@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { createMetrics } from '../../../src/metrics/metrics-factory.js';
-import type { BperConfig } from '../../../src/config/types.js';
+import type { FirstanceConfig } from '../../../src/config/types.js';
 
-function makeConfig(overrides: Partial<BperConfig['metrics']> = {}): BperConfig {
+function makeConfig(overrides: Partial<FirstanceConfig['metrics']> = {}): FirstanceConfig {
   return {
     service: { name: 'test-svc', version: '1.0.0' },
     logger: { level: 'INFO', sampleRate: 1, persistentKeys: {} },

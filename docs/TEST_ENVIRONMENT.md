@@ -1,4 +1,4 @@
-# Ambiente di Test — BPER Lambda Obs
+# Ambiente di Test — Firstance Lambda Obs
 
 **Versione**: 1.0.0 | **Data**: 2026-03-06
 
@@ -28,7 +28,7 @@ Vedere anche: [ACCEPTANCE_CRITERIA.md](ACCEPTANCE_CRITERIA.md)
 
 ```bash
 docker build \
-  -t bper-ts-test \
+  -t firstance-ts-test \
   -f packages/typescript/tests/Dockerfile \
   packages/typescript
 ```
@@ -41,13 +41,13 @@ L'immagine usa `node:20-alpine`. Il Dockerfile:
 ### Esecuzione test
 
 ```bash
-docker run --rm bper-ts-test
+docker run --rm firstance-ts-test
 ```
 
 ### Esecuzione con coverage
 
 ```bash
-docker run --rm bper-ts-test npx vitest run --coverage
+docker run --rm firstance-ts-test npx vitest run --coverage
 ```
 
 Soglie di coverage configurate in `packages/typescript/vitest.config.ts`:
@@ -60,7 +60,7 @@ Soglie di coverage configurate in `packages/typescript/vitest.config.ts`:
 docker run --rm -it \
   -v "$(pwd)/packages/typescript/src:/app/src" \
   -v "$(pwd)/packages/typescript/tests:/app/tests" \
-  bper-ts-test npx vitest --reporter=verbose
+  firstance-ts-test npx vitest --reporter=verbose
 ```
 
 ---
@@ -71,7 +71,7 @@ docker run --rm -it \
 
 ```bash
 docker build \
-  -t bper-php-test \
+  -t firstance-php-test \
   -f packages/php/tests/Dockerfile \
   packages/php
 ```
@@ -85,13 +85,13 @@ L'immagine usa `php:8.2-cli-alpine`. Il Dockerfile:
 ### Esecuzione test
 
 ```bash
-docker run --rm bper-php-test
+docker run --rm firstance-php-test
 ```
 
 ### Verifica PHPStan (livello 8)
 
 ```bash
-docker run --rm bper-php-test \
+docker run --rm firstance-php-test \
   vendor/bin/phpstan analyse src \
   --level=8 \
   --no-progress
@@ -105,7 +105,7 @@ Il file `phpstan.neon` configura:
 ### Esecuzione con output XML (CI/CD)
 
 ```bash
-docker run --rm bper-php-test \
+docker run --rm firstance-php-test \
   vendor/bin/phpunit --log-junit /tmp/junit.xml
 ```
 
@@ -118,7 +118,7 @@ struttura (chiavi identiche in ordine alfabetico).
 
 ### Prerequisiti
 
-Le immagini `bper-ts-test` e `bper-php-test` devono essere gia' costruite (passi 1 e 2).
+Le immagini `firstance-ts-test` e `firstance-php-test` devono essere gia' costruite (passi 1 e 2).
 
 ### Esecuzione
 
@@ -158,18 +158,18 @@ Sequenza raccomandata per un pipeline CI:
 
 ```bash
 # 1. Build
-docker build -t bper-ts-test -f packages/typescript/tests/Dockerfile packages/typescript
-docker build -t bper-php-test -f packages/php/tests/Dockerfile packages/php
+docker build -t firstance-ts-test -f packages/typescript/tests/Dockerfile packages/typescript
+docker build -t firstance-php-test -f packages/php/tests/Dockerfile packages/php
 
 # 2. Unit tests
-docker run --rm bper-ts-test
-docker run --rm bper-php-test
+docker run --rm firstance-ts-test
+docker run --rm firstance-php-test
 
 # 3. Static analysis (PHP)
-docker run --rm bper-php-test vendor/bin/phpstan analyse src --level=8 --no-progress
+docker run --rm firstance-php-test vendor/bin/phpstan analyse src --level=8 --no-progress
 
 # 4. Coverage (TS)
-docker run --rm bper-ts-test npx vitest run --coverage
+docker run --rm firstance-ts-test npx vitest run --coverage
 
 # 5. Cross-language parity
 bash tests/cross-language-test.sh
@@ -193,7 +193,7 @@ packages/typescript/tests/
 │   ├── middleware/    # Test MiddlewareChain
 │   └── tracer/        # Test TracerFactory
 ├── integration/       # Test di integrazione (future)
-└── factory.test.ts    # Test entry point createBperLogger
+└── factory.test.ts    # Test entry point createFirstanceLogger
 
 packages/php/tests/
 ├── Dockerfile
@@ -205,7 +205,7 @@ packages/php/tests/
 │   ├── Metrics/       # Test EmfMetricsEmitter
 │   └── Tracer/        # Test XRayTracerFactory
 ├── Integration/       # Test di integrazione (future)
-└── BperLoggerFactoryTest.php
+└── FirstanceLoggerFactoryTest.php
 
 tests/                 # Test cross-language (root del monorepo)
 ├── cross-language-test.sh

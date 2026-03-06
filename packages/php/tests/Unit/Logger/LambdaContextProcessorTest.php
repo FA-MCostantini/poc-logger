@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Bper\LambdaObs\Tests\Unit\Logger;
+namespace Firstance\LambdaObs\Tests\Unit\Logger;
 
-use Bper\LambdaObs\Logger\LambdaContextProcessor;
+use Firstance\LambdaObs\Logger\LambdaContextProcessor;
 use Monolog\Level;
 use Monolog\LogRecord;
 use PHPUnit\Framework\TestCase;

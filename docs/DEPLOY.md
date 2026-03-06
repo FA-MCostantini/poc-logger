@@ -1,6 +1,6 @@
 # DEPLOY — Guida al Deploy e Utilizzo
 
-> **Nota**: `bper-lambda-obs` e' un Proof of Concept per uso interno BPER.
+> **Nota**: `firstance-lambda-obs` e' un Proof of Concept per uso interno Firstance.
 > Non viene pubblicato su npm o Packagist. Questa guida descrive come
 > integrarlo localmente nei progetti Lambda.
 
@@ -14,7 +14,7 @@
 
 ```bash
 # Dalla root del progetto Lambda
-npm install /percorso/assoluto/bper-lambda-obs/packages/typescript
+npm install /percorso/assoluto/firstance-lambda-obs/packages/typescript
 ```
 
 Il `package.json` del progetto risultante:
@@ -22,7 +22,7 @@ Il `package.json` del progetto risultante:
 ```json
 {
   "dependencies": {
-    "@bper/lambda-obs": "file:/percorso/assoluto/bper-lambda-obs/packages/typescript"
+    "@firstance/lambda-obs": "file:/percorso/assoluto/firstance-lambda-obs/packages/typescript"
   }
 }
 ```
@@ -30,19 +30,19 @@ Il `package.json` del progetto risultante:
 **Opzione B: npm link (per sviluppo attivo)**
 
 ```bash
-# Nel pacchetto bper-lambda-obs
-cd /percorso/assoluto/bper-lambda-obs/packages/typescript
+# Nel pacchetto firstance-lambda-obs
+cd /percorso/assoluto/firstance-lambda-obs/packages/typescript
 npm link
 
 # Nel progetto Lambda
 cd /percorso/del/progetto-lambda
-npm link @bper/lambda-obs
+npm link @firstance/lambda-obs
 ```
 
 **Build richiesta prima dell'uso:**
 
 ```bash
-cd /percorso/assoluto/bper-lambda-obs/packages/typescript
+cd /percorso/assoluto/firstance-lambda-obs/packages/typescript
 npm install
 npm run build
 ```
@@ -60,14 +60,14 @@ Aggiungi al `composer.json` del progetto Lambda:
   "repositories": [
     {
       "type": "path",
-      "url": "/percorso/assoluto/bper-lambda-obs/packages/php",
+      "url": "/percorso/assoluto/firstance-lambda-obs/packages/php",
       "options": {
         "symlink": true
       }
     }
   ],
   "require": {
-    "bper/lambda-obs": "*"
+    "firstance/lambda-obs": "*"
   }
 }
 ```
@@ -91,11 +91,11 @@ Ogni pacchetto include un `Dockerfile` dedicato per i test.
 ```bash
 # Dalla root del monorepo
 docker build \
-  -t bper-obs-ts \
+  -t firstance-obs-ts \
   -f packages/typescript/tests/Dockerfile \
   packages/typescript
 
-docker run --rm bper-obs-ts
+docker run --rm firstance-obs-ts
 ```
 
 Output atteso: tutti i test Vitest superati con reporter verbose.
@@ -104,11 +104,11 @@ Output atteso: tutti i test Vitest superati con reporter verbose.
 
 ```bash
 docker build \
-  -t bper-obs-php \
+  -t firstance-obs-php \
   -f packages/php/tests/Dockerfile \
   packages/php
 
-docker run --rm bper-obs-php
+docker run --rm firstance-obs-php
 ```
 
 Output atteso: tutti i test PHPUnit superati con formato testdox.
@@ -138,8 +138,8 @@ Globals:
       Variables:
         POWERTOOLS_LOG_LEVEL: INFO
         POWERTOOLS_SERVICE_NAME: !Ref ServiceName
-        BPER_OBS_METRICS_NAMESPACE: BPERFileDelivery
-        BPER_OBS_SAMPLE_RATE: "0.1"
+        Firstance_OBS_METRICS_NAMESPACE: FirstanceFileDelivery
+        Firstance_OBS_SAMPLE_RATE: "0.1"
 ```
 
 ---
@@ -156,15 +156,15 @@ cd packages/typescript
 npm install && npm run build
 
 # 2. Struttura layer
-mkdir -p layer/nodejs/node_modules/@bper
-cp -r . layer/nodejs/node_modules/@bper/lambda-obs
+mkdir -p layer/nodejs/node_modules/@firstance
+cp -r . layer/nodejs/node_modules/@firstance/lambda-obs
 
 # 3. Zip e upload
 cd layer
-zip -r bper-lambda-obs-layer.zip nodejs/
+zip -r firstance-lambda-obs-layer.zip nodejs/
 aws lambda publish-layer-version \
-  --layer-name bper-lambda-obs \
-  --zip-file fileb://bper-lambda-obs-layer.zip \
+  --layer-name firstance-lambda-obs \
+  --zip-file fileb://firstance-lambda-obs-layer.zip \
   --compatible-runtimes nodejs20.x
 ```
 
@@ -182,10 +182,10 @@ cp -r src/ layer/php/src/
 
 # 3. Zip e upload
 cd layer
-zip -r bper-lambda-obs-php-layer.zip php/
+zip -r firstance-lambda-obs-php-layer.zip php/
 aws lambda publish-layer-version \
-  --layer-name bper-lambda-obs-php \
-  --zip-file fileb://bper-lambda-obs-php-layer.zip \
+  --layer-name firstance-lambda-obs-php \
+  --zip-file fileb://firstance-lambda-obs-php-layer.zip \
   --compatible-runtimes provided.al2
 ```
 
@@ -207,7 +207,7 @@ Passi chiave:
 | Fase | TypeScript | PHP |
 |------|-----------|-----|
 | Lint | `npm run lint` (ESLint) | `vendor/bin/phpstan analyse` (level 8) |
-| Test | `docker run bper-obs-ts` | `docker run bper-obs-php` |
+| Test | `docker run firstance-obs-ts` | `docker run firstance-obs-php` |
 | Build | `npm run build` | `composer install --no-dev` |
 | Cross-lang | `bash tests/cross-language-test.sh` | (stesso script) |
 

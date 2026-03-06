@@ -8,18 +8,18 @@ import { createTracer } from './tracer/tracer-factory.js';
 import { createMetrics } from './metrics/metrics-factory.js';
 import { createMiddlewareChain } from './middleware/middy-chain.js';
 
-export interface BperLoggerOptions {
+export interface FirstanceLoggerOptions {
   readonly configPath: string;
 }
 
-export interface BperObservability {
+export interface FirstanceObservability {
   readonly logger: Logger;
   readonly tracer: Tracer;
   readonly metrics: Metrics;
   middleware(options?: { logEvent?: boolean }): MiddlewareLikeObj;
 }
 
-export function createBperLogger(options: BperLoggerOptions): BperObservability {
+export function createFirstanceLogger(options: FirstanceLoggerOptions): FirstanceObservability {
   const config = loadConfig({ configPath: options.configPath });
 
   const formatter = new OTelLogFormatter({

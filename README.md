@@ -1,9 +1,9 @@
-# bper-lambda-obs
+# firstance-lambda-obs
 
 Libreria di observability unificata per AWS Lambda, con output OTel JSON compatibile con CloudWatch Logs Insights.
 Disponibile in **TypeScript** (npm) e **PHP** (Composer). Entrambe le implementazioni producono strutture JSON identiche.
 
-> Uso interno BPER — Proof of Concept. Non pubblicato su npm o Packagist.
+> Uso interno Firstance — Proof of Concept. Non pubblicato su npm o Packagist.
 
 ---
 
@@ -13,7 +13,7 @@ Disponibile in **TypeScript** (npm) e **PHP** (Composer). Entrambe le implementa
 
 ```bash
 # Dalla root del tuo progetto Lambda
-npm install /percorso/assoluto/bper-lambda-obs/packages/typescript
+npm install /percorso/assoluto/firstance-lambda-obs/packages/typescript
 ```
 
 ### 2. Crea `config.yaml`
@@ -41,10 +41,10 @@ metrics:
 ### 3. Usa nel tuo handler
 
 ```typescript
-import { createBperLogger } from '@bper/lambda-obs';
+import { createFirstanceLogger } from '@firstance/lambda-obs';
 import middy from '@middy/core';
 
-const obs = createBperLogger({ configPath: './config.yaml' });
+const obs = createFirstanceLogger({ configPath: './config.yaml' });
 
 const handler = middy(async (event, context) => {
   obs.logger.info('Processing event', { eventType: event.type });
@@ -67,11 +67,11 @@ Aggiungi al tuo `composer.json`:
   "repositories": [
     {
       "type": "path",
-      "url": "/percorso/assoluto/bper-lambda-obs/packages/php"
+      "url": "/percorso/assoluto/firstance-lambda-obs/packages/php"
     }
   ],
   "require": {
-    "bper/lambda-obs": "*"
+    "firstance/lambda-obs": "*"
   }
 }
 ```
@@ -87,9 +87,9 @@ Stesso file YAML mostrato nel Quick Start TypeScript — identico per entrambe l
 ### 3. Usa nel tuo handler
 
 ```php
-use Bper\LambdaObs\BperLoggerFactory;
+use Firstance\LambdaObs\FirstanceLoggerFactory;
 
-$obs = BperLoggerFactory::create('./config.yaml');
+$obs = FirstanceLoggerFactory::create('./config.yaml');
 $obs->logger->info('Processing event', ['eventType' => $event['type']]);
 ```
 
@@ -140,8 +140,8 @@ fields @timestamp, message, level, service, cold_start
 |-----------------------------|---------------------------|----------|
 | `POWERTOOLS_LOG_LEVEL`      | `logger.level`            | `INFO`   |
 | `POWERTOOLS_SERVICE_NAME`   | `service.name`            | —        |
-| `BPER_OBS_SAMPLE_RATE`      | `logger.sampleRate`       | `0.1`    |
-| `BPER_OBS_METRICS_NAMESPACE`| `metrics.namespace`       | —        |
+| `Firstance_OBS_SAMPLE_RATE`      | `logger.sampleRate`       | `0.1`    |
+| `Firstance_OBS_METRICS_NAMESPACE`| `metrics.namespace`       | —        |
 
 Le variabili d'ambiente hanno precedenza sui valori nel file `config.yaml` (12-factor app).
 
@@ -150,12 +150,12 @@ Le variabili d'ambiente hanno precedenza sui valori nel file `config.yaml` (12-f
 ## Struttura del monorepo
 
 ```
-bper-lambda-obs/
+firstance-lambda-obs/
 ├── packages/
-│   ├── typescript/       # Pacchetto npm (@bper/lambda-obs)
+│   ├── typescript/       # Pacchetto npm (@firstance/lambda-obs)
 │   │   ├── src/
 │   │   └── tests/
-│   └── php/              # Pacchetto Composer (bper/lambda-obs)
+│   └── php/              # Pacchetto Composer (firstance/lambda-obs)
 │       ├── src/
 │       └── tests/
 ├── shared/
@@ -176,20 +176,20 @@ Non sono richieste installazioni locali di Node o PHP. Tutti i test girano via D
 
 ```bash
 # Build e run test suite
-docker build -t bper-obs-ts packages/typescript \
+docker build -t firstance-obs-ts packages/typescript \
   -f packages/typescript/tests/Dockerfile
 
-docker run --rm bper-obs-ts
+docker run --rm firstance-obs-ts
 ```
 
 ### PHP
 
 ```bash
 # Build e run test suite
-docker build -t bper-obs-php packages/php \
+docker build -t firstance-obs-php packages/php \
   -f packages/php/tests/Dockerfile
 
-docker run --rm bper-obs-php
+docker run --rm firstance-obs-php
 ```
 
 ### Test cross-language (output JSON identico)
@@ -216,4 +216,4 @@ bash tests/cross-language-test.sh
 
 ## Licenza
 
-MIT-0 — Uso interno BPER. Nessuna restrizione sull'uso, la modifica e la distribuzione.
+MIT-0 — Uso interno Firstance. Nessuna restrizione sull'uso, la modifica e la distribuzione.

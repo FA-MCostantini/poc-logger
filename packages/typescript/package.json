@@ -1,5 +1,5 @@
 {
-  "name": "@bper/lambda-obs",
+  "name": "@firstance/lambda-obs",
   "version": "1.0.0",
   "description": "Observability unificata per AWS Lambda — Logger, Tracer, Metrics con output OTel",
   "main": "dist/index.js",

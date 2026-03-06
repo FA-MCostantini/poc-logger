@@ -1,4 +1,4 @@
-# Glossario — BPER Lambda Obs
+# Glossario — Firstance Lambda Obs
 
 **Versione**: 1.0.0 | **Data**: 2026-03-06
 
@@ -32,12 +32,12 @@ Esempio minimo:
   "_aws": {
     "Timestamp": 1709712000000,
     "CloudWatchMetrics": [{
-      "Namespace": "BPERFileDelivery",
+      "Namespace": "FirstanceFileDelivery",
       "Dimensions": [["service"]],
       "Metrics": [{"Name": "ColdStart", "Unit": "Count"}]
     }]
   },
-  "service": "bper-file-delivery",
+  "service": "firstance-file-delivery",
   "ColdStart": 1.0
 }
 ```

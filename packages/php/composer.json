@@ -1,5 +1,5 @@
 {
-  "name": "bper/lambda-obs",
+  "name": "firstance/lambda-obs",
   "description": "Observability unificata per AWS Lambda PHP — Logger, Tracer, Metrics con output OTel",
   "type": "library",
   "license": "MIT",
@@ -19,12 +19,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Bper\\LambdaObs\\": "src/"
+      "Firstance\\LambdaObs\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Bper\\LambdaObs\\Tests\\": "tests/"
+      "Firstance\\LambdaObs\\Tests\\": "tests/"
     }
   }
 }

@@ -1,12 +1,12 @@
 import { describe, it, expect } from 'vitest';
-import { createBperLogger } from '../../src/factory.js';
+import { createFirstanceLogger } from '../../src/factory.js';
 import { resolve } from 'node:path';
 
 const fixturesDir = resolve(__dirname, '../fixtures');
 
-describe('createBperLogger', () => {
-  it('should create BperObservability from config file', () => {
-    const result = createBperLogger({
+describe('createFirstanceLogger', () => {
+  it('should create FirstanceObservability from config file', () => {
+    const result = createFirstanceLogger({
       configPath: resolve(fixturesDir, 'config.valid.yaml'),
     });
 
@@ -17,7 +17,7 @@ describe('createBperLogger', () => {
   });
 
   it('should return middleware as a MiddlewareLikeObj', () => {
-    const result = createBperLogger({
+    const result = createFirstanceLogger({
       configPath: resolve(fixturesDir, 'config.valid.yaml'),
     });
 

@@ -1,6 +1,6 @@
 # PIANO DI ESECUZIONE MULTI-AGENTICO
 
-## Progetto: `bper-lambda-obs` — Observability unificata per Lambda PHP + TypeScript
+## Progetto: `firstance-lambda-obs` — Observability unificata per Lambda PHP + TypeScript
 
 **Versione:** 1.0.0  
 **Data:** 2026-03-05  
@@ -11,7 +11,7 @@
 ## 1. Struttura del progetto
 
 ```
-bper-lambda-obs/
+firstance-lambda-obs/
 │
 ├── README.md                          # Guida installazione e uso
 ├── PIANO_ESECUZIONE.md                # Questo file
@@ -19,7 +19,7 @@ bper-lambda-obs/
 ├── LICENSE                            # MIT-0
 │
 ├── packages/
-│   ├── typescript/                    # @bper/lambda-obs (npm)
+│   ├── typescript/                    # @firstance/lambda-obs (npm)
 │   │   ├── src/
 │   │   │   ├── index.ts              # Export pubblici
 │   │   │   ├── config/
@@ -35,7 +35,7 @@ bper-lambda-obs/
 │   │   │   │   └── metrics-factory.ts# Wrapper Powertools Metrics
 │   │   │   ├── middleware/
 │   │   │   │   └── middy-chain.ts    # Middy middleware chain orchestrator
-│   │   │   └── factory.ts            # createBperLogger() — entry point
+│   │   │   └── factory.ts            # createFirstanceLogger() — entry point
 │   │   ├── tests/
 │   │   │   ├── unit/
 │   │   │   │   ├── config/
@@ -67,9 +67,9 @@ bper-lambda-obs/
 │   │   ├── .eslintrc.json
 │   │   └── config.example.yaml
 │   │
-│   └── php/                           # bper/lambda-obs (composer)
+│   └── php/                           # firstance/lambda-obs (composer)
 │       ├── src/
-│       │   ├── BperLoggerFactory.php  # Entry point — crea logger, tracer, metrics
+│       │   ├── FirstanceLoggerFactory.php  # Entry point — crea logger, tracer, metrics
 │       │   ├── Config/
 │       │   │   ├── ConfigLoader.php   # YAML + .env merge
 │       │   │   ├── ConfigSchema.php   # Validazione struttura config
@@ -98,7 +98,7 @@ bper-lambda-obs/
 │       │   │   │   └── XRayTracerFactoryTest.php
 │       │   │   ├── Metrics/
 │       │   │   │   └── EmfMetricsEmitterTest.php
-│       │   │   └── BperLoggerFactoryTest.php
+│       │   │   └── FirstanceLoggerFactoryTest.php
 │       │   ├── Integration/
 │       │   │   ├── MiddlewareChainTest.php
 │       │   │   ├── CloudWatchOutputTest.php
@@ -204,7 +204,7 @@ bper-lambda-obs/
 
 ### Agent-2: TS-CORE — Implementazione TypeScript
 
-**Ruolo:** Implementa il pacchetto npm `@bper/lambda-obs`.
+**Ruolo:** Implementa il pacchetto npm `@firstance/lambda-obs`.
 
 **Skill attivate:** `php-senior-dev` (sezione TypeScript strict mode)
 
@@ -217,7 +217,7 @@ bper-lambda-obs/
 | Tracer factory | `src/tracer/tracer-factory.ts` | Agent-1 config |
 | Metrics factory | `src/metrics/metrics-factory.ts` | Agent-1 config |
 | Middy middleware chain | `src/middleware/middy-chain.ts` | Logger + Tracer + Metrics |
-| Factory `createBperLogger()` | `src/factory.ts` | Tutti i moduli |
+| Factory `createFirstanceLogger()` | `src/factory.ts` | Tutti i moduli |
 | Export barrel | `src/index.ts` | Factory |
 | `package.json` | `package.json` | — |
 | `tsconfig.json` + build | `tsconfig*.json` | — |
@@ -256,23 +256,23 @@ interface OTelLogRecord {
 }
 ```
 
-**Dettaglio `createBperLogger()`:**
+**Dettaglio `createFirstanceLogger()`:**
 ```typescript
-interface BperObservability {
+interface FirstanceObservability {
   readonly logger: Logger;
   readonly tracer: Tracer;
   readonly metrics: Metrics;
   middleware(): middy.MiddlewareObj;
 }
 
-function createBperLogger(options: BperLoggerOptions): BperObservability;
+function createFirstanceLogger(options: FirstanceLoggerOptions): FirstanceObservability;
 ```
 
 ---
 
 ### Agent-3: PHP-CORE — Implementazione PHP
 
-**Ruolo:** Implementa il pacchetto Composer `bper/lambda-obs`.
+**Ruolo:** Implementa il pacchetto Composer `firstance/lambda-obs`.
 
 **Skill attivate:** `php-senior-dev` (regole complete)
 
@@ -286,7 +286,7 @@ function createBperLogger(options: BperLoggerOptions): BperObservability;
 | `XRayTracerFactory` | `src/Tracer/XRayTracerFactory.php` | Agent-1 config |
 | `EmfMetricsEmitter` | `src/Metrics/EmfMetricsEmitter.php` | Agent-1 config |
 | `LambdaObsMiddleware` | `src/Middleware/LambdaObsMiddleware.php` | Logger + Tracer |
-| `BperLoggerFactory` | `src/BperLoggerFactory.php` | Tutti i moduli |
+| `FirstanceLoggerFactory` | `src/FirstanceLoggerFactory.php` | Tutti i moduli |
 | `composer.json` | `composer.json` | — |
 | PHPUnit config | `phpunit.xml` | — |
 | PHPStan config | `phpstan.neon` | — |
@@ -326,20 +326,20 @@ final class OTelCloudWatchFormatter extends JsonFormatter
 }
 ```
 
-**Dettaglio `BperLoggerFactory`:**
+**Dettaglio `FirstanceLoggerFactory`:**
 ```php
 declare(strict_types=1);
 
-final class BperLoggerFactory
+final class FirstanceLoggerFactory
 {
     public static function create(
         string $configPath = './config.yaml',
-    ): BperObservability {
+    ): FirstanceObservability {
         // Carica config, crea Logger + Tracer + Metrics
     }
 }
 
-final readonly class BperObservability
+final readonly class FirstanceObservability
 {
     public function __construct(
         public Logger $logger,           // Monolog\Logger con OTel handler
@@ -369,12 +369,12 @@ Scrive metriche CloudWatch EMF direttamente su stdout:
   "_aws": {
     "Timestamp": 1234567890,
     "CloudWatchMetrics": [{
-      "Namespace": "BPERFileDelivery",
+      "Namespace": "FirstanceFileDelivery",
       "Dimensions": [["service", "environment"]],
       "Metrics": [{"Name": "ColdStart", "Unit": "Count"}]
     }]
   },
-  "service": "bper-file-delivery",
+  "service": "firstance-file-delivery",
   "environment": "production",
   "ColdStart": 1
 }
@@ -424,7 +424,7 @@ Scrive metriche CloudWatch EMF direttamente su stdout:
 | XRayTracerFactory | Creazione tracer, config OTel | — |
 | EmfMetricsEmitter | Formato EMF, dimensioni, metriche | Output stdout EMF |
 | LambdaObsMiddleware | Inject context, lifecycle hooks | Chain completa |
-| BperLoggerFactory | Creazione completa, opzioni inline vs YAML | End-to-end: config → log → output |
+| FirstanceLoggerFactory | Creazione completa, opzioni inline vs YAML | End-to-end: config → log → output |
 
 **Test cross-language (integrazione):**
 - Entrambi i pacchetti producono lo STESSO output JSON per lo STESSO input config
@@ -521,7 +521,7 @@ Fase 2 ─── CORE TYPESCRIPT ───────────────�
 │  Agent-2: TracerFactory
 │  Agent-2: MetricsFactory
 │  Agent-2: Middy middleware chain
-│  Agent-2: Factory createBperLogger()
+│  Agent-2: Factory createFirstanceLogger()
 │  Agent-2: index.ts barrel export
 │
 │  Agent-4: Test unitari TS (in parallelo con Agent-2)
@@ -536,7 +536,7 @@ Fase 3 ─── CORE PHP ──────────────────
 │  Agent-3: XRayTracerFactory
 │  Agent-3: EmfMetricsEmitter
 │  Agent-3: LambdaObsMiddleware
-│  Agent-3: BperLoggerFactory
+│  Agent-3: FirstanceLoggerFactory
 │
 │  Agent-4: Test unitari PHP (in parallelo con Agent-3)
 │
@@ -645,7 +645,7 @@ Per attivare ciascun agente nel contesto di Claude Code o di una sessione Claude
 
 ### Agent-0 — Orchestratore
 ```
-Sei l'orchestratore del progetto bper-lambda-obs.
+Sei l'orchestratore del progetto firstance-lambda-obs.
 Leggi PIANO_ESECUZIONE.md e coordina l'esecuzione sequenziale delle fasi.
 Per ogni fase: attiva l'agente corretto, verifica il gate di milestone,
 e solo dopo procedi alla fase successiva.
@@ -654,7 +654,7 @@ Mantieni CHANGELOG.md aggiornato dopo ogni milestone.
 
 ### Agent-1 — Config
 ```
-Sei l'agente CONFIG per bper-lambda-obs.
+Sei l'agente CONFIG per firstance-lambda-obs.
 Skill: php-senior-dev (sezioni TypeScript + PHP).
 Compito: implementare il layer di configurazione condiviso.
 Input: PIANO_ESECUZIONE.md §Agent-1.
@@ -667,9 +667,9 @@ Inizia dal JSON Schema e poi genera gli altri file.
 
 ### Agent-2 — TypeScript Core
 ```
-Sei l'agente TS-CORE per bper-lambda-obs.
+Sei l'agente TS-CORE per firstance-lambda-obs.
 Skill: php-senior-dev (sezione TypeScript strict mode).
-Compito: implementare @bper/lambda-obs come pacchetto npm.
+Compito: implementare @firstance/lambda-obs come pacchetto npm.
 Input: PIANO_ESECUZIONE.md §Agent-2, output Agent-1 (types + config).
 Output: OTelLogFormatter, TracerFactory, MetricsFactory,
   Middy middleware chain, Factory, barrel export.
@@ -680,12 +680,12 @@ L'output JSON DEVE essere identico a quello di Agent-3 (PHP).
 
 ### Agent-3 — PHP Core
 ```
-Sei l'agente PHP-CORE per bper-lambda-obs.
+Sei l'agente PHP-CORE per firstance-lambda-obs.
 Skill: php-senior-dev (regole complete).
-Compito: implementare bper/lambda-obs come pacchetto Composer.
+Compito: implementare firstance/lambda-obs come pacchetto Composer.
 Input: PIANO_ESECUZIONE.md §Agent-3, output Agent-1 (ConfigDTO + config).
 Output: OTelCloudWatchFormatter, Processors, TracerFactory,
-  EmfMetricsEmitter, Middleware, BperLoggerFactory.
+  EmfMetricsEmitter, Middleware, FirstanceLoggerFactory.
 Vincoli: declare(strict_types=1), final readonly class, enum,
   PHPStan level 8, PSR-3 LoggerInterface.
 L'output JSON DEVE essere identico a quello di Agent-2 (TS).
@@ -693,7 +693,7 @@ L'output JSON DEVE essere identico a quello di Agent-2 (TS).
 
 ### Agent-4 — Testing
 ```
-Sei l'agente TESTING per bper-lambda-obs.
+Sei l'agente TESTING per firstance-lambda-obs.
 Compito: scrivere test unitari e di integrazione per entrambi i pacchetti.
 Input: PIANO_ESECUZIONE.md §Agent-4, codice di Agent-2 e Agent-3.
 Output: test Vitest (TS), test PHPUnit (PHP), fixtures condivise.
@@ -704,7 +704,7 @@ Test critico: stesso input YAML → stesso output JSON in TS e PHP.
 
 ### Agent-5 — Documentazione
 ```
-Sei l'agente DOCS per bper-lambda-obs.
+Sei l'agente DOCS per firstance-lambda-obs.
 Skill: ears-doc (per requisiti e criteri di accettazione).
 Compito: scrivere tutta la documentazione del progetto.
 Input: PIANO_ESECUZIONE.md §Agent-5, output di tutti gli altri agenti.
@@ -716,7 +716,7 @@ README deve permettere installazione in < 5 minuti.
 
 ### Agent-6 — Deploy
 ```
-Sei l'agente DEPLOY per bper-lambda-obs.
+Sei l'agente DEPLOY per firstance-lambda-obs.
 Compito: configurare build, CI/CD, e pubblicazione pacchetti.
 Input: PIANO_ESECUZIONE.md §Agent-6, package.json e composer.json finali.
 Output: CI pipeline GitHub Actions, script publish,

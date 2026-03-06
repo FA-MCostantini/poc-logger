@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Bper\LambdaObs\Tests\Unit\Metrics;
+namespace Firstance\LambdaObs\Tests\Unit\Metrics;
 
-use Bper\LambdaObs\Config\ConfigDTO;
-use Bper\LambdaObs\Metrics\EmfMetricsEmitter;
+use Firstance\LambdaObs\Config\ConfigDTO;
+use Firstance\LambdaObs\Metrics\EmfMetricsEmitter;
 use PHPUnit\Framework\TestCase;
 
 final class EmfMetricsEmitterTest extends TestCase

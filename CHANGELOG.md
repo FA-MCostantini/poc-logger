@@ -1,6 +1,6 @@
 # Changelog
 
-Tutte le modifiche rilevanti al progetto `bper-lambda-obs` sono documentate in questo file.
+Tutte le modifiche rilevanti al progetto `firstance-lambda-obs` sono documentate in questo file.
 
 Formato basato su [Keep a Changelog](https://keepachangelog.com/it/1.0.0/).
 
@@ -11,8 +11,8 @@ Formato basato su [Keep a Changelog](https://keepachangelog.com/it/1.0.0/).
 ### Fase 0 — Setup monorepo
 
 - Creata struttura directory del monorepo (`packages/typescript`, `packages/php`, `shared/`, `tests/`, `docs/`)
-- Aggiunto `package.json` per il pacchetto TypeScript (`@bper/lambda-obs` v1.0.0)
-- Aggiunto `composer.json` per il pacchetto PHP (`bper/lambda-obs`)
+- Aggiunto `package.json` per il pacchetto TypeScript (`@firstance/lambda-obs` v1.0.0)
+- Aggiunto `composer.json` per il pacchetto PHP (`firstance/lambda-obs`)
 - Configurato `tsconfig.json` e `tsconfig.build.json` con target ES2022
 - Configurato `vitest.config.ts` per test unitari TypeScript
 - Configurato `phpunit.xml` con test suite Unit e Integration
@@ -28,7 +28,7 @@ Formato basato su [Keep a Changelog](https://keepachangelog.com/it/1.0.0/).
 - **TypeScript**:
   - `ConfigSchema` con Zod v3: validazione, defaults, tipi inferiti
   - `ConfigLoader`: parsing YAML + override variabili d'ambiente (12-factor)
-  - `types.ts`: tipi `BperConfig`, `LoggerConfig`, `TracerConfig`, `MetricsConfig`
+  - `types.ts`: tipi `FirstanceConfig`, `LoggerConfig`, `TracerConfig`, `MetricsConfig`
   - Barrel export da `src/config/index.ts`
   - Test unitari Vitest per schema e loader
 - **PHP**:
@@ -41,10 +41,10 @@ Formato basato su [Keep a Changelog](https://keepachangelog.com/it/1.0.0/).
 ### Fase 2 — Core TypeScript
 
 - `OTelLogFormatter`: estensione `PowertoolsLogFormatter` per output JSON OTel-compatibile
-- `TracerFactory`: factory per AWS X-Ray tracer con configurazione da `BperConfig`
+- `TracerFactory`: factory per AWS X-Ray tracer con configurazione da `FirstanceConfig`
 - `MetricsFactory`: factory per EMF metrics con namespace e cold start configurabili
 - Middy middleware chain: logger + tracer + metrics integrati in singolo middleware
-- `createBperLogger()`: factory principale — entry point pubblico della libreria
+- `createFirstanceLogger()`: factory principale — entry point pubblico della libreria
 - `src/index.ts`: barrel export di tutte le API pubbliche
 
 ### Fase 3 — Core PHP
@@ -54,7 +54,7 @@ Formato basato su [Keep a Changelog](https://keepachangelog.com/it/1.0.0/).
 - `ColdStartProcessor`: Monolog processor per rilevamento e annotazione cold start
 - `XRayTracerFactory`: factory per integrazione AWS X-Ray con Monolog
 - `EmfMetricsEmitter`: emettitore metriche in formato CloudWatch EMF
-- `BperLoggerFactory`: factory principale PHP — entry point pubblico della libreria
+- `FirstanceLoggerFactory`: factory principale PHP — entry point pubblico della libreria
 
 ### Fase 4 — Test di integrazione cross-language
 

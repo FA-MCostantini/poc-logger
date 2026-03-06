@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bper\LambdaObs\Config;
+namespace Firstance\LambdaObs\Config;
 
 final readonly class ConfigDTO
 {

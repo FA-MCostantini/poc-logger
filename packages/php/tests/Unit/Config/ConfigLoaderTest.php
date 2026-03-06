@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Bper\LambdaObs\Tests\Unit\Config;
+namespace Firstance\LambdaObs\Tests\Unit\Config;
 
-use Bper\LambdaObs\Config\ConfigLoader;
+use Firstance\LambdaObs\Config\ConfigLoader;
 use PHPUnit\Framework\TestCase;
 
 final class ConfigLoaderTest extends TestCase
@@ -16,16 +16,16 @@ final class ConfigLoaderTest extends TestCase
         $this->fixturesPath = dirname(__DIR__, 2) . '/Fixtures';
         putenv('POWERTOOLS_LOG_LEVEL');
         putenv('POWERTOOLS_SERVICE_NAME');
-        putenv('BPER_OBS_SAMPLE_RATE');
-        putenv('BPER_OBS_METRICS_NAMESPACE');
+        putenv('Firstance_OBS_SAMPLE_RATE');
+        putenv('Firstance_OBS_METRICS_NAMESPACE');
     }
 
     protected function tearDown(): void
     {
         putenv('POWERTOOLS_LOG_LEVEL');
         putenv('POWERTOOLS_SERVICE_NAME');
-        putenv('BPER_OBS_SAMPLE_RATE');
-        putenv('BPER_OBS_METRICS_NAMESPACE');
+        putenv('Firstance_OBS_SAMPLE_RATE');
+        putenv('Firstance_OBS_METRICS_NAMESPACE');
     }
 
     public function testLoadsValidFullConfig(): void
@@ -68,8 +68,8 @@ final class ConfigLoaderTest extends TestCase
     {
         putenv('POWERTOOLS_LOG_LEVEL=ERROR');
         putenv('POWERTOOLS_SERVICE_NAME=env-service');
-        putenv('BPER_OBS_SAMPLE_RATE=0.75');
-        putenv('BPER_OBS_METRICS_NAMESPACE=EnvNS');
+        putenv('Firstance_OBS_SAMPLE_RATE=0.75');
+        putenv('Firstance_OBS_METRICS_NAMESPACE=EnvNS');
 
         $config = ConfigLoader::load($this->fixturesPath . '/config.valid.yaml');
 

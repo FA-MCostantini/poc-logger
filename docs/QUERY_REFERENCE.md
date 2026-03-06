@@ -43,7 +43,7 @@ Tutti i log di un servizio specifico (utile quando piu' Lambda condividono lo st
 
 ```
 fields Timestamp, SeverityText, Body
-| filter Resource.service_name = "bper-file-delivery"
+| filter Resource.service_name = "firstance-file-delivery"
 | sort Timestamp desc
 | limit 200
 ```
@@ -127,7 +127,7 @@ Log di una specifica Lambda function (utile se il Log Group e' condiviso o aggre
 
 ```
 fields Timestamp, SeverityText, Body
-| filter Resource.faas_name = "bper-file-delivery-prod"
+| filter Resource.faas_name = "firstance-file-delivery-prod"
 | sort Timestamp desc
 | limit 100
 ```
@@ -184,7 +184,7 @@ Utile durante il test di parita' per confrontare output delle due implementazion
 
 ```
 fields Timestamp, Resource.service_language, SeverityText, SeverityNumber, Body
-| filter Resource.service_name = "bper-file-delivery"
+| filter Resource.service_name = "firstance-file-delivery"
 | sort Timestamp desc, Resource.service_language asc
 | limit 50
 ```

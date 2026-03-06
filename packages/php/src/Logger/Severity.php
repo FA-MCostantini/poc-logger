@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bper\LambdaObs\Logger;
+namespace Firstance\LambdaObs\Logger;
 
 enum Severity: int
 {

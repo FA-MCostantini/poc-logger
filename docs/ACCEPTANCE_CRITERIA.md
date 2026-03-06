@@ -1,4 +1,4 @@
-# Criteri di Accettazione — BPER Lambda Obs
+# Criteri di Accettazione — Firstance Lambda Obs
 
 **Versione**: 1.0.0 | **Data**: 2026-03-06
 
@@ -15,7 +15,7 @@ in [SPEC_REQUISITI.md](SPEC_REQUISITI.md) e ai test in [TEST_ENVIRONMENT.md](TES
 | AC-CFG-02 | Dato un file YAML con solo `service.name`, applica tutti i default (livello INFO, sampleRate 1.0, tracer abilitato, namespace Default, captureColdStart true). | REQ-CFG-05 |
 | AC-CFG-03 | Con `POWERTOOLS_LOG_LEVEL=DEBUG` impostato, il campo `logger.level` nel config e' `"DEBUG"` indipendentemente dal valore YAML. | REQ-CFG-02 |
 | AC-CFG-04 | Con `POWERTOOLS_SERVICE_NAME=override-name`, il campo `service.name` e' `"override-name"`. | REQ-CFG-02 |
-| AC-CFG-05 | Con `BPER_OBS_SAMPLE_RATE=0.05` (stringa), il campo `logger.sampleRate` e' il numero `0.05`. | REQ-CFG-02 |
+| AC-CFG-05 | Con `Firstance_OBS_SAMPLE_RATE=0.05` (stringa), il campo `logger.sampleRate` e' il numero `0.05`. | REQ-CFG-02 |
 | AC-CFG-06 | Se il file YAML non esiste, lancia un'eccezione con il path nel messaggio. | REQ-CFG-03 |
 | AC-CFG-07 | Se il YAML manca del campo obbligatorio `service.name`, lancia un errore di validazione. | REQ-CFG-04 |
 | AC-CFG-08 | Se `logger.level` contiene un valore non valido (es. `"VERBOSE"`), lancia un errore di validazione. | REQ-CFG-04 |
@@ -81,13 +81,13 @@ in [SPEC_REQUISITI.md](SPEC_REQUISITI.md) e ai test in [TEST_ENVIRONMENT.md](TES
 
 ---
 
-## 6. Factory Entry Point (TS: `createBperLogger` | PHP: `BperLoggerFactory::create`)
+## 6. Factory Entry Point (TS: `createFirstanceLogger` | PHP: `FirstanceLoggerFactory::create`)
 
 | # | Criterio | Requisito |
 |---|---|---|
-| AC-FAC-01 | TS: `createBperLogger({ configPath })` restituisce un oggetto con `logger`, `tracer`, `metrics` e `middleware`. | REQ-FAC-01 |
+| AC-FAC-01 | TS: `createFirstanceLogger({ configPath })` restituisce un oggetto con `logger`, `tracer`, `metrics` e `middleware`. | REQ-FAC-01 |
 | AC-FAC-02 | TS: `obs.middleware()` restituisce un `MiddlewareLikeObj` valido compatibile con Middy. | REQ-MW-01 |
-| AC-FAC-03 | PHP: `BperLoggerFactory::create(configPath)` restituisce un `BperObservability` con `logger`, `tracer`, `metrics`. | REQ-FAC-02 |
+| AC-FAC-03 | PHP: `FirstanceLoggerFactory::create(configPath)` restituisce un `FirstanceObservability` con `logger`, `tracer`, `metrics`. | REQ-FAC-02 |
 | AC-FAC-04 | Tutti i componenti restituiti usano la stessa configurazione (stessi `serviceName`, `namespace`, ecc.). | REQ-FAC-03 |
 | AC-FAC-05 | Il formatter del logger e' un'istanza di `OTelLogFormatter` (TS) / `OTelCloudWatchFormatter` (PHP). | REQ-LOG-01 |
 
@@ -110,8 +110,8 @@ in [SPEC_REQUISITI.md](SPEC_REQUISITI.md) e ai test in [TEST_ENVIRONMENT.md](TES
 Il progetto e' considerato completo quando:
 
 1. Tutti i criteri di accettazione sopra sono verificati da test automatici
-2. `docker run --rm bper-ts-test` termina con exit code 0
-3. `docker run --rm bper-php-test` termina con exit code 0
-4. `docker run --rm bper-php-test vendor/bin/phpstan analyse src --level=8` termina con exit code 0
+2. `docker run --rm firstance-ts-test` termina con exit code 0
+3. `docker run --rm firstance-php-test` termina con exit code 0
+4. `docker run --rm firstance-php-test vendor/bin/phpstan analyse src --level=8` termina con exit code 0
 5. Coverage TS: statements >= 90%, branches >= 85%
 6. `bash tests/cross-language-test.sh` termina con exit code 0

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Bper\LambdaObs\Tests\Unit\Config;
+namespace Firstance\LambdaObs\Tests\Unit\Config;
 
-use Bper\LambdaObs\Config\ConfigDTO;
+use Firstance\LambdaObs\Config\ConfigDTO;
 use PHPUnit\Framework\TestCase;
 
 final class ConfigDTOTest extends TestCase

@@ -1,4 +1,4 @@
-# Design — bper-lambda-obs
+# Design — firstance-lambda-obs
 
 **Data:** 2026-03-05
 **Versione:** 1.0.0
@@ -10,7 +10,7 @@ Monorepo con due pacchetti gemelli (TypeScript npm + PHP Composer) che producono
 ## Decisioni di design
 
 ### Branching
-- Branch di lavoro: `feature/bper-lambda-obs` da `main`
+- Branch di lavoro: `feature/firstance-lambda-obs` da `main`
 
 ### Testing
 - Docker container per pacchetto, nessuna dipendenza locale
@@ -29,7 +29,7 @@ Monorepo con due pacchetti gemelli (TypeScript npm + PHP Composer) che producono
 ## Struttura
 
 ```
-bper-lambda-obs/
+firstance-lambda-obs/
 ├── packages/
 │   ├── typescript/
 │   │   ├── src/

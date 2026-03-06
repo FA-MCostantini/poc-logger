@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Bper\LambdaObs\Tests\Unit\Logger;
+namespace Firstance\LambdaObs\Tests\Unit\Logger;
 
-use Bper\LambdaObs\Logger\Severity;
+use Firstance\LambdaObs\Logger\Severity;
 use PHPUnit\Framework\TestCase;
 
 final class SeverityTest extends TestCase

@@ -2,29 +2,29 @@
 
 declare(strict_types=1);
 
-namespace Bper\LambdaObs;
+namespace Firstance\LambdaObs;
 
-use Bper\LambdaObs\Config\ConfigDTO;
-use Bper\LambdaObs\Config\ConfigLoader;
-use Bper\LambdaObs\Logger\ColdStartProcessor;
-use Bper\LambdaObs\Logger\LambdaContextProcessor;
-use Bper\LambdaObs\Logger\OTelCloudWatchFormatter;
-use Bper\LambdaObs\Metrics\EmfMetricsEmitter;
-use Bper\LambdaObs\Tracer\XRayTracerFactory;
+use Firstance\LambdaObs\Config\ConfigDTO;
+use Firstance\LambdaObs\Config\ConfigLoader;
+use Firstance\LambdaObs\Logger\ColdStartProcessor;
+use Firstance\LambdaObs\Logger\LambdaContextProcessor;
+use Firstance\LambdaObs\Logger\OTelCloudWatchFormatter;
+use Firstance\LambdaObs\Metrics\EmfMetricsEmitter;
+use Firstance\LambdaObs\Tracer\XRayTracerFactory;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
 
-final class BperLoggerFactory
+final class FirstanceLoggerFactory
 {
-    public static function create(string $configPath = './config.yaml'): BperObservability
+    public static function create(string $configPath = './config.yaml'): FirstanceObservability
     {
         $config = ConfigLoader::load($configPath);
 
         return self::createFromConfig($config);
     }
 
-    public static function createFromConfig(ConfigDTO $config): BperObservability
+    public static function createFromConfig(ConfigDTO $config): FirstanceObservability
     {
         $region = getenv('AWS_REGION') ?: '';
 
@@ -47,7 +47,7 @@ final class BperLoggerFactory
         $tracer = new XRayTracerFactory($config);
         $metrics = new EmfMetricsEmitter($config);
 
-        return new BperObservability(
+        return new FirstanceObservability(
             logger: $logger,
             tracer: $tracer,
             metrics: $metrics,

@@ -1,14 +1,14 @@
-# BPER Lambda Obs — Configurazione condivisa
+# Firstance Lambda Obs — Configurazione condivisa
 # Identico per PHP e TypeScript
 #
 # Env overrides (12-factor):
 #   POWERTOOLS_LOG_LEVEL  -> logger.level
 #   POWERTOOLS_SERVICE_NAME -> service.name
-#   BPER_OBS_SAMPLE_RATE -> logger.sampleRate
-#   BPER_OBS_METRICS_NAMESPACE -> metrics.namespace
+#   Firstance_OBS_SAMPLE_RATE -> logger.sampleRate
+#   Firstance_OBS_METRICS_NAMESPACE -> metrics.namespace
 
 service:
-  name: "bper-file-delivery"
+  name: "firstance-file-delivery"
   version: "1.0.0"
 
 logger:
@@ -23,5 +23,5 @@ tracer:
   captureHTTPS: true
 
 metrics:
-  namespace: "BPERFileDelivery"
+  namespace: "FirstanceFileDelivery"
   captureColdStart: true

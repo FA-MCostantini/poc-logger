@@ -1,13 +1,13 @@
 import { readFileSync } from 'node:fs';
 import yaml from 'js-yaml';
 import { configSchema } from './schema.js';
-import type { BperConfig } from './types.js';
+import type { FirstanceConfig } from './types.js';
 
 interface LoadConfigOptions {
   readonly configPath: string;
 }
 
-export function loadConfig(options: LoadConfigOptions): BperConfig {
+export function loadConfig(options: LoadConfigOptions): FirstanceConfig {
   const raw = readYaml(options.configPath);
   const merged = applyEnvOverrides(raw);
   return configSchema.parse(merged);
@@ -32,8 +32,8 @@ function applyEnvOverrides(config: Record<string, unknown>): Record<string, unkn
   }> = [
     { envKey: 'POWERTOOLS_SERVICE_NAME', path: ['service', 'name'] },
     { envKey: 'POWERTOOLS_LOG_LEVEL', path: ['logger', 'level'] },
-    { envKey: 'BPER_OBS_SAMPLE_RATE', path: ['logger', 'sampleRate'], transform: parseFloat },
-    { envKey: 'BPER_OBS_METRICS_NAMESPACE', path: ['metrics', 'namespace'] },
+    { envKey: 'Firstance_OBS_SAMPLE_RATE', path: ['logger', 'sampleRate'], transform: parseFloat },
+    { envKey: 'Firstance_OBS_METRICS_NAMESPACE', path: ['metrics', 'namespace'] },
   ];
 
   for (const override of overrides) {

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/vendor/autoload.php';
 
-use Bper\LambdaObs\Logger\OTelCloudWatchFormatter;
+use Firstance\LambdaObs\Logger\OTelCloudWatchFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;

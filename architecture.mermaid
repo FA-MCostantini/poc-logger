@@ -6,7 +6,7 @@ graph TB
 
     subgraph TS_LAMBDA["Lambda TypeScript"]
         TS_H[Handler + Middy]
-        subgraph TS_PKG["@bper/lambda-obs (npm)"]
+        subgraph TS_PKG["@firstance/lambda-obs (npm)"]
             TS_F["Factory"]
             TS_FMT["OTelLogFormatter"]
         end
@@ -20,8 +20,8 @@ graph TB
 
     subgraph PHP_LAMBDA["Lambda PHP / Symfony"]
         PHP_H[Handler + EventSubscriber]
-        subgraph PHP_PKG["bper/lambda-obs (composer)"]
-            PHP_F["BperLoggerFactory"]
+        subgraph PHP_PKG["firstance/lambda-obs (composer)"]
+            PHP_F["FirstanceLoggerFactory"]
             PHP_FMT["OTelCloudWatchFormatter"]
         end
         subgraph PHP_DEPS["Dipendenze PHP"]

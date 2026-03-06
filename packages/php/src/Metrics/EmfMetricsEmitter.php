@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Bper\LambdaObs\Metrics;
+namespace Firstance\LambdaObs\Metrics;
 
-use Bper\LambdaObs\Config\ConfigDTO;
+use Firstance\LambdaObs\Config\ConfigDTO;
 
 final class EmfMetricsEmitter
 {

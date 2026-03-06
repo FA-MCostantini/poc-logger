@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Bper\LambdaObs\Tests\Unit\Config;
+namespace Firstance\LambdaObs\Tests\Unit\Config;
 
-use Bper\LambdaObs\Config\ConfigSchema;
+use Firstance\LambdaObs\Config\ConfigSchema;
 use PHPUnit\Framework\TestCase;
 
 final class ConfigSchemaTest extends TestCase

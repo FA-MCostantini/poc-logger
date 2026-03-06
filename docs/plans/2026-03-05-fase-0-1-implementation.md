@@ -119,7 +119,7 @@ git add -A && git commit -m "chore: create monorepo directory structure"
 
 ```json
 {
-  "name": "@bper/lambda-obs",
+  "name": "@firstance/lambda-obs",
   "version": "1.0.0",
   "description": "Observability unificata per AWS Lambda — Logger, Tracer, Metrics con output OTel",
   "main": "dist/index.js",
@@ -230,7 +230,7 @@ export default defineConfig({
 
 ```json
 {
-  "name": "bper/lambda-obs",
+  "name": "firstance/lambda-obs",
   "description": "Observability unificata per AWS Lambda PHP — Logger, Tracer, Metrics con output OTel",
   "type": "library",
   "license": "MIT",
@@ -250,12 +250,12 @@ export default defineConfig({
   },
   "autoload": {
     "psr-4": {
-      "Bper\\LambdaObs\\": "src/"
+      "Firstance\\LambdaObs\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Bper\\LambdaObs\\Tests\\": "tests/"
+      "Firstance\\LambdaObs\\Tests\\": "tests/"
     }
   }
 }
@@ -380,8 +380,8 @@ git add -A && git commit -m "chore: add package configs, Dockerfiles, and tool c
 ```json
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://bper.it/lambda-obs/config-schema.json",
-  "title": "BPER Lambda Obs Configuration",
+  "$id": "https://firstance.it/lambda-obs/config-schema.json",
+  "title": "Firstance Lambda Obs Configuration",
   "type": "object",
   "required": ["service"],
   "properties": {
@@ -482,17 +482,17 @@ git add shared/schemas/config-schema.json && git commit -m "feat: add shared JSO
 **Step 1: Create template**
 
 ```yaml
-# BPER Lambda Obs — Configurazione condivisa
+# Firstance Lambda Obs — Configurazione condivisa
 # Identico per PHP e TypeScript
 #
 # Env overrides (12-factor):
 #   POWERTOOLS_LOG_LEVEL  -> logger.level
 #   POWERTOOLS_SERVICE_NAME -> service.name
-#   BPER_OBS_SAMPLE_RATE -> logger.sampleRate
-#   BPER_OBS_METRICS_NAMESPACE -> metrics.namespace
+#   Firstance_OBS_SAMPLE_RATE -> logger.sampleRate
+#   Firstance_OBS_METRICS_NAMESPACE -> metrics.namespace
 
 service:
-  name: "bper-file-delivery"
+  name: "firstance-file-delivery"
   version: "1.0.0"
 
 logger:
@@ -507,7 +507,7 @@ tracer:
   captureHTTPS: true
 
 metrics:
-  namespace: "BPERFileDelivery"
+  namespace: "FirstanceFileDelivery"
   captureColdStart: true
 ```
 
@@ -584,8 +584,8 @@ describe('configSchema', () => {
 Run (in Docker):
 ```bash
 cd packages/typescript && \
-docker build -f tests/Dockerfile -t bper-ts-test . && \
-docker run --rm bper-ts-test npx vitest run tests/unit/config/schema.test.ts
+docker build -f tests/Dockerfile -t firstance-ts-test . && \
+docker run --rm firstance-ts-test npx vitest run tests/unit/config/schema.test.ts
 ```
 Expected: FAIL — module not found
 
@@ -596,15 +596,15 @@ Expected: FAIL — module not found
 import type { z } from 'zod';
 import type { configSchema } from './schema.js';
 
-export type BperConfig = z.infer<typeof configSchema>;
+export type FirstanceConfig = z.infer<typeof configSchema>;
 
 export type LogLevel = 'DEBUG' | 'INFO' | 'WARN' | 'ERROR';
 
 export const ENV_MAPPINGS = {
   'POWERTOOLS_LOG_LEVEL': 'logger.level',
   'POWERTOOLS_SERVICE_NAME': 'service.name',
-  'BPER_OBS_SAMPLE_RATE': 'logger.sampleRate',
-  'BPER_OBS_METRICS_NAMESPACE': 'metrics.namespace',
+  'Firstance_OBS_SAMPLE_RATE': 'logger.sampleRate',
+  'Firstance_OBS_METRICS_NAMESPACE': 'metrics.namespace',
 } as const;
 
 export type EnvKey = keyof typeof ENV_MAPPINGS;
@@ -710,8 +710,8 @@ logger:
 # packages/typescript/tests/fixtures/.env.test
 POWERTOOLS_LOG_LEVEL=ERROR
 POWERTOOLS_SERVICE_NAME=env-override-service
-BPER_OBS_SAMPLE_RATE=0.75
-BPER_OBS_METRICS_NAMESPACE=EnvNamespace
+Firstance_OBS_SAMPLE_RATE=0.75
+Firstance_OBS_METRICS_NAMESPACE=EnvNamespace
 ```
 
 **Step 2: Write the failing test**
@@ -768,8 +768,8 @@ describe('loadConfig', () => {
   it('should override config with environment variables', () => {
     process.env['POWERTOOLS_LOG_LEVEL'] = 'ERROR';
     process.env['POWERTOOLS_SERVICE_NAME'] = 'env-service';
-    process.env['BPER_OBS_SAMPLE_RATE'] = '0.75';
-    process.env['BPER_OBS_METRICS_NAMESPACE'] = 'EnvNS';
+    process.env['Firstance_OBS_SAMPLE_RATE'] = '0.75';
+    process.env['Firstance_OBS_METRICS_NAMESPACE'] = 'EnvNS';
 
     const config = loadConfig({ configPath: path.join(FIXTURES, 'config.valid.yaml') });
     expect(config.service.name).toBe('env-service');
@@ -802,13 +802,13 @@ Expected: FAIL — module `loader` not found
 import { readFileSync } from 'node:fs';
 import yaml from 'js-yaml';
 import { configSchema } from './schema.js';
-import type { BperConfig } from './types.js';
+import type { FirstanceConfig } from './types.js';
 
 interface LoadConfigOptions {
   readonly configPath: string;
 }
 
-export function loadConfig(options: LoadConfigOptions): BperConfig {
+export function loadConfig(options: LoadConfigOptions): FirstanceConfig {
   const raw = readYaml(options.configPath);
   const merged = applyEnvOverrides(raw);
   return configSchema.parse(merged);
@@ -833,8 +833,8 @@ function applyEnvOverrides(config: Record<string, unknown>): Record<string, unkn
   }> = [
     { envKey: 'POWERTOOLS_SERVICE_NAME', path: ['service', 'name'] },
     { envKey: 'POWERTOOLS_LOG_LEVEL', path: ['logger', 'level'] },
-    { envKey: 'BPER_OBS_SAMPLE_RATE', path: ['logger', 'sampleRate'], transform: parseFloat },
-    { envKey: 'BPER_OBS_METRICS_NAMESPACE', path: ['metrics', 'namespace'] },
+    { envKey: 'Firstance_OBS_SAMPLE_RATE', path: ['logger', 'sampleRate'], transform: parseFloat },
+    { envKey: 'Firstance_OBS_METRICS_NAMESPACE', path: ['metrics', 'namespace'] },
   ];
 
   for (const override of overrides) {
@@ -888,9 +888,9 @@ git commit -m "feat(ts): add ConfigLoader with YAML parsing and env override"
 // packages/php/tests/Unit/Config/ConfigDTOTest.php
 declare(strict_types=1);
 
-namespace Bper\LambdaObs\Tests\Unit\Config;
+namespace Firstance\LambdaObs\Tests\Unit\Config;
 
-use Bper\LambdaObs\Config\ConfigDTO;
+use Firstance\LambdaObs\Config\ConfigDTO;
 use PHPUnit\Framework\TestCase;
 
 final class ConfigDTOTest extends TestCase
@@ -942,8 +942,8 @@ final class ConfigDTOTest extends TestCase
 Run:
 ```bash
 cd packages/php && \
-docker build -f tests/Dockerfile -t bper-php-test . && \
-docker run --rm bper-php-test vendor/bin/phpunit --filter ConfigDTOTest
+docker build -f tests/Dockerfile -t firstance-php-test . && \
+docker run --rm firstance-php-test vendor/bin/phpunit --filter ConfigDTOTest
 ```
 Expected: FAIL — class not found
 
@@ -954,7 +954,7 @@ Expected: FAIL — class not found
 // packages/php/src/Config/ConfigDTO.php
 declare(strict_types=1);
 
-namespace Bper\LambdaObs\Config;
+namespace Firstance\LambdaObs\Config;
 
 final readonly class ConfigDTO
 {
@@ -1002,9 +1002,9 @@ git commit -m "feat(php): add ConfigDTO readonly value object"
 // packages/php/tests/Unit/Config/ConfigSchemaTest.php
 declare(strict_types=1);
 
-namespace Bper\LambdaObs\Tests\Unit\Config;
+namespace Firstance\LambdaObs\Tests\Unit\Config;
 
-use Bper\LambdaObs\Config\ConfigSchema;
+use Firstance\LambdaObs\Config\ConfigSchema;
 use PHPUnit\Framework\TestCase;
 
 final class ConfigSchemaTest extends TestCase
@@ -1077,7 +1077,7 @@ final class ConfigSchemaTest extends TestCase
 // packages/php/src/Config/ConfigSchema.php
 declare(strict_types=1);
 
-namespace Bper\LambdaObs\Config;
+namespace Firstance\LambdaObs\Config;
 
 final class ConfigSchema
 {
@@ -1224,8 +1224,8 @@ logger:
 # packages/php/tests/Fixtures/.env.test
 POWERTOOLS_LOG_LEVEL=ERROR
 POWERTOOLS_SERVICE_NAME=env-override-service
-BPER_OBS_SAMPLE_RATE=0.75
-BPER_OBS_METRICS_NAMESPACE=EnvNamespace
+Firstance_OBS_SAMPLE_RATE=0.75
+Firstance_OBS_METRICS_NAMESPACE=EnvNamespace
 ```
 
 **Step 2: Write the failing test**
@@ -1235,9 +1235,9 @@ BPER_OBS_METRICS_NAMESPACE=EnvNamespace
 // packages/php/tests/Unit/Config/ConfigLoaderTest.php
 declare(strict_types=1);
 
-namespace Bper\LambdaObs\Tests\Unit\Config;
+namespace Firstance\LambdaObs\Tests\Unit\Config;
 
-use Bper\LambdaObs\Config\ConfigLoader;
+use Firstance\LambdaObs\Config\ConfigLoader;
 use PHPUnit\Framework\TestCase;
 
 final class ConfigLoaderTest extends TestCase
@@ -1250,16 +1250,16 @@ final class ConfigLoaderTest extends TestCase
         // Clean env before each test
         putenv('POWERTOOLS_LOG_LEVEL');
         putenv('POWERTOOLS_SERVICE_NAME');
-        putenv('BPER_OBS_SAMPLE_RATE');
-        putenv('BPER_OBS_METRICS_NAMESPACE');
+        putenv('Firstance_OBS_SAMPLE_RATE');
+        putenv('Firstance_OBS_METRICS_NAMESPACE');
     }
 
     protected function tearDown(): void
     {
         putenv('POWERTOOLS_LOG_LEVEL');
         putenv('POWERTOOLS_SERVICE_NAME');
-        putenv('BPER_OBS_SAMPLE_RATE');
-        putenv('BPER_OBS_METRICS_NAMESPACE');
+        putenv('Firstance_OBS_SAMPLE_RATE');
+        putenv('Firstance_OBS_METRICS_NAMESPACE');
     }
 
     public function testLoadsValidFullConfig(): void
@@ -1302,8 +1302,8 @@ final class ConfigLoaderTest extends TestCase
     {
         putenv('POWERTOOLS_LOG_LEVEL=ERROR');
         putenv('POWERTOOLS_SERVICE_NAME=env-service');
-        putenv('BPER_OBS_SAMPLE_RATE=0.75');
-        putenv('BPER_OBS_METRICS_NAMESPACE=EnvNS');
+        putenv('Firstance_OBS_SAMPLE_RATE=0.75');
+        putenv('Firstance_OBS_METRICS_NAMESPACE=EnvNS');
 
         $config = ConfigLoader::load($this->fixturesPath . '/config.valid.yaml');
 
@@ -1336,7 +1336,7 @@ final class ConfigLoaderTest extends TestCase
 // packages/php/src/Config/ConfigLoader.php
 declare(strict_types=1);
 
-namespace Bper\LambdaObs\Config;
+namespace Firstance\LambdaObs\Config;
 
 use Symfony\Component\Yaml\Yaml;
 
@@ -1345,11 +1345,11 @@ final class ConfigLoader
     private const ENV_MAPPINGS = [
         'POWERTOOLS_SERVICE_NAME' => ['service', 'name'],
         'POWERTOOLS_LOG_LEVEL' => ['logger', 'level'],
-        'BPER_OBS_SAMPLE_RATE' => ['logger', 'sampleRate'],
-        'BPER_OBS_METRICS_NAMESPACE' => ['metrics', 'namespace'],
+        'Firstance_OBS_SAMPLE_RATE' => ['logger', 'sampleRate'],
+        'Firstance_OBS_METRICS_NAMESPACE' => ['metrics', 'namespace'],
     ];
 
-    private const FLOAT_KEYS = ['BPER_OBS_SAMPLE_RATE'];
+    private const FLOAT_KEYS = ['Firstance_OBS_SAMPLE_RATE'];
 
     public static function load(string $configPath): ConfigDTO
     {
@@ -1444,7 +1444,7 @@ git commit -m "feat(php): add ConfigLoader with YAML parsing and env override"
 // packages/typescript/src/index.ts
 export { loadConfig } from './config/loader.js';
 export { configSchema } from './config/schema.js';
-export type { BperConfig, LogLevel } from './config/types.js';
+export type { FirstanceConfig, LogLevel } from './config/types.js';
 ```
 
 **Step 2: Commit**
@@ -1463,8 +1463,8 @@ git commit -m "feat(ts): add barrel export for config module"
 ```bash
 cd /home/rancor/PhpstormProjects/cProject/logger && \
 cd packages/typescript && \
-docker build -f tests/Dockerfile -t bper-ts-test . && \
-docker run --rm bper-ts-test
+docker build -f tests/Dockerfile -t firstance-ts-test . && \
+docker run --rm firstance-ts-test
 ```
 Expected: all unit tests PASS
 
@@ -1473,8 +1473,8 @@ Expected: all unit tests PASS
 ```bash
 cd /home/rancor/PhpstormProjects/cProject/logger && \
 cd packages/php && \
-docker build -f tests/Dockerfile -t bper-php-test . && \
-docker run --rm bper-php-test
+docker build -f tests/Dockerfile -t firstance-php-test . && \
+docker run --rm firstance-php-test
 ```
 Expected: all unit tests PASS
 

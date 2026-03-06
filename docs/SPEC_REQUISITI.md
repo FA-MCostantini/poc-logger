@@ -1,4 +1,4 @@
-# Specifiche Requisiti — BPER Lambda Obs
+# Specifiche Requisiti — Firstance Lambda Obs
 
 **Versione**: 1.0.0 | **Data**: 2026-03-06 | **Formato**: EARS (Easy Approach to Requirements Syntax)
 
@@ -23,7 +23,7 @@ against the shared config schema before returning a typed configuration object.
 
 **REQ-CFG-02** *(Event-Driven)*
 When an environment variable override is present (`POWERTOOLS_SERVICE_NAME`, `POWERTOOLS_LOG_LEVEL`,
-`BPER_OBS_SAMPLE_RATE`, `BPER_OBS_METRICS_NAMESPACE`), the ConfigLoader shall apply it on top
+`Firstance_OBS_SAMPLE_RATE`, `Firstance_OBS_METRICS_NAMESPACE`), the ConfigLoader shall apply it on top
 of the YAML values before validation, following 12-factor app principles.
 
 **REQ-CFG-03** *(Unwanted Behavior)*
@@ -162,12 +162,12 @@ Lambda event payload at INFO level on each invocation.
 ## 8. Factory / Entry Point
 
 **REQ-FAC-01** *(Ubiquitous — TS)*
-The `createBperLogger(options)` function shall return a `BperObservability` object containing
+The `createFirstanceLogger(options)` function shall return a `FirstanceObservability` object containing
 pre-configured `logger`, `tracer`, `metrics` instances and a `middleware()` factory method.
 
 **REQ-FAC-02** *(Ubiquitous — PHP)*
-The `BperLoggerFactory` shall provide a static `create(configPath)` method returning a
-`BperObservability` value object with `logger`, `tracer`, and `metrics` properties.
+The `FirstanceLoggerFactory` shall provide a static `create(configPath)` method returning a
+`FirstanceObservability` value object with `logger`, `tracer`, and `metrics` properties.
 
 **REQ-FAC-03** *(Ubiquitous)*
 All instances returned by the factory shall be configured using values from the same
