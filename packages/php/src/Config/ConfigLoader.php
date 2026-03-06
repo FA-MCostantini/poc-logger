@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Firstance\LambdaObs\Config;
 
+use Composer\InstalledVersions;
 use Symfony\Component\Yaml\Yaml;
 
 final class ConfigLoader
@@ -28,28 +29,25 @@ final class ConfigLoader
 
     private static function findProjectName(): string
     {
-        $dir = getcwd() ?: '/';
-        while (true) {
-            $composerPath = $dir . '/composer.json';
-            if (file_exists($composerPath)) {
-                $content = file_get_contents($composerPath);
-                if ($content !== false) {
-                    /** @var mixed $data */
-                    $data = json_decode($content, true);
-                    if (is_array($data) && isset($data['name']) && is_string($data['name']) && $data['name'] !== '') {
-                        $parts = explode('/', $data['name']);
-                        return end($parts) ?: 'unknown-service';
-                    }
-                }
-            }
-            $parent = \dirname($dir);
-            if ($parent === $dir) {
-                break;
-            }
-            $dir = $parent;
+        $root = InstalledVersions::getRootPackage();
+        $name = $root['name'];
+        if ($name !== '' && $name !== '__root__') {
+            $parts = explode('/', $name);
+            return end($parts) ?: 'unknown-service';
         }
 
         return 'unknown-service';
+    }
+
+    private static function findProjectVersion(): string
+    {
+        $root = InstalledVersions::getRootPackage();
+        $version = $root['pretty_version'];
+        if ($version !== '' && !str_starts_with($version, 'dev-') && !str_contains($version, 'no-version-set')) {
+            return $version;
+        }
+
+        return '0.0.0';
     }
 
     /**
@@ -58,7 +56,7 @@ final class ConfigLoader
     private static function getDefaultConfig(string $serviceName): array
     {
         return [
-            'service' => ['name' => $serviceName, 'version' => '0.0.0'],
+            'service' => ['name' => $serviceName, 'version' => self::findProjectVersion()],
             'logger' => ['level' => 'INFO', 'sampleRate' => 1.0, 'persistentKeys' => []],
             'tracer' => ['enabled' => true, 'captureHTTPS' => true],
             'metrics' => ['namespace' => 'Default', 'captureColdStart' => true],
