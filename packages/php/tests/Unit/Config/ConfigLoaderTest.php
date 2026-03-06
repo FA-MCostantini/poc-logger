@@ -88,8 +88,23 @@ final class ConfigLoaderTest extends TestCase
 
     public function testWarnsWhenDefaultConfigCannotBeWritten(): void
     {
-        $config = ConfigLoader::load('/nonexistent-dir/impossible/config.yaml');
+        $warningMessage = null;
+        set_error_handler(function (int $errno, string $errstr) use (&$warningMessage): bool {
+            $warningMessage = $errstr;
+            return true;
+        }, E_USER_WARNING);
+
+        try {
+            $config = ConfigLoader::load('/nonexistent-dir/impossible/config.yaml');
+        } finally {
+            restore_error_handler();
+        }
+
         $this->assertSame('lambda-obs', $config->serviceName);
+        $this->assertSame(
+            '[firstance-obs] Cannot create default config at /nonexistent-dir/impossible/config.yaml, using in-memory defaults',
+            $warningMessage,
+        );
     }
 
     public function testEnvOverridesYamlValues(): void
