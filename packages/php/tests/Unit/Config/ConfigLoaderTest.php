@@ -57,11 +57,39 @@ final class ConfigLoaderTest extends TestCase
         ConfigLoader::load($this->fixturesPath . '/config.invalid.yaml');
     }
 
-    public function testThrowsOnMissingFile(): void
+    public function testCreatesDefaultConfigWhenYamlMissing(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $tempPath = $this->fixturesPath . '/config.auto-created.yaml';
+        if (file_exists($tempPath)) {
+            unlink($tempPath);
+        }
 
-        ConfigLoader::load($this->fixturesPath . '/nonexistent.yaml');
+        try {
+            $config = ConfigLoader::load($tempPath);
+            $this->assertSame('lambda-obs', $config->serviceName);
+            $this->assertSame('0.0.0', $config->serviceVersion);
+            $this->assertSame('INFO', $config->logLevel);
+            $this->assertSame(1.0, $config->logSampleRate);
+            $this->assertTrue($config->tracerEnabled);
+            $this->assertSame('Default', $config->metricsNamespace);
+            $this->assertFileExists($tempPath);
+        } finally {
+            if (file_exists($tempPath)) {
+                unlink($tempPath);
+            }
+        }
+    }
+
+    public function testUsesProjectNameWhenServiceNameMissing(): void
+    {
+        $config = ConfigLoader::load($this->fixturesPath . '/config.no-service-name.yaml');
+        $this->assertSame('lambda-obs', $config->serviceName);
+    }
+
+    public function testWarnsWhenDefaultConfigCannotBeWritten(): void
+    {
+        $config = ConfigLoader::load('/nonexistent-dir/impossible/config.yaml');
+        $this->assertSame('lambda-obs', $config->serviceName);
     }
 
     public function testEnvOverridesYamlValues(): void

@@ -26,13 +26,17 @@ When an environment variable override is present (`POWERTOOLS_SERVICE_NAME`, `PO
 `Firstance_OBS_SAMPLE_RATE`, `Firstance_OBS_METRICS_NAMESPACE`), the ConfigLoader shall apply it on top
 of the YAML values before validation, following 12-factor app principles.
 
-**REQ-CFG-03** *(Unwanted Behavior)*
-If the YAML file does not exist or is unreadable, then the ConfigLoader shall throw a runtime
-exception with a message indicating the missing file path.
+**REQ-CFG-03** *(Event-Driven)*
+When the YAML file does not exist, the ConfigLoader shall attempt to create it with default
+values (including `service.name` derived from the consuming project's `package.json` or
+`composer.json`). If creation fails, the ConfigLoader shall emit a non-blocking warning
+and proceed with in-memory defaults.
 
-**REQ-CFG-04** *(Unwanted Behavior)*
-If the parsed YAML does not conform to the config schema (e.g., missing required `service.name`,
-invalid log level), then the ConfigLoader shall throw a validation error listing all offending fields.
+**REQ-CFG-04** *(Event-Driven)*
+When the parsed YAML is missing `service.name`, the ConfigLoader shall derive a default value
+from the `name` field in `package.json` (TS) or `composer.json` (PHP) of the consuming project.
+If the YAML contains other schema violations (e.g., invalid log level), then the ConfigLoader
+shall throw a validation error listing all offending fields.
 
 **REQ-CFG-05** *(Ubiquitous)*
 The ConfigLoader shall apply default values for all optional fields:

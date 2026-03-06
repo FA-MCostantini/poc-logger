@@ -1,5 +1,6 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import path from 'node:path';
+import { existsSync, unlinkSync } from 'node:fs';
 import { loadConfig } from '../../../src/config/loader.js';
 
 const FIXTURES = path.resolve(__dirname, '../../fixtures');
@@ -39,10 +40,41 @@ describe('loadConfig', () => {
     ).toThrow();
   });
 
-  it('should throw on missing YAML file', () => {
-    expect(() =>
-      loadConfig({ configPath: path.join(FIXTURES, 'nonexistent.yaml') })
-    ).toThrow();
+  it('should create default config when YAML is missing', () => {
+    const tempPath = path.join(FIXTURES, 'config.auto-created.yaml');
+    // Ensure the file does not exist before the test
+    if (existsSync(tempPath)) unlinkSync(tempPath);
+
+    try {
+      const config = loadConfig({ configPath: tempPath });
+      expect(config.service.name).toBe('lambda-obs');
+      expect(config.service.version).toBe('0.0.0');
+      expect(config.logger.level).toBe('INFO');
+      expect(config.logger.sampleRate).toBe(1.0);
+      expect(config.tracer.enabled).toBe(true);
+      expect(config.metrics.namespace).toBe('Default');
+      expect(existsSync(tempPath)).toBe(true);
+    } finally {
+      if (existsSync(tempPath)) unlinkSync(tempPath);
+    }
+  });
+
+  it('should use service name from package.json when YAML has no service.name', () => {
+    const config = loadConfig({ configPath: path.join(FIXTURES, 'config.no-service-name.yaml') });
+    expect(config.service.name).toBe('lambda-obs');
+  });
+
+  it('should warn but not throw when default config cannot be written', () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    try {
+      const config = loadConfig({ configPath: '/nonexistent-dir/impossible-path/config.yaml' });
+      expect(config.service.name).toBe('lambda-obs');
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Cannot create default config'),
+      );
+    } finally {
+      warnSpy.mockRestore();
+    }
   });
 
   it('should override config with environment variables', () => {

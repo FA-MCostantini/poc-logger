@@ -12,12 +12,12 @@ in [SPEC_REQUISITI.md](SPEC_REQUISITI.md) e ai test in [TEST_ENVIRONMENT.md](TES
 | # | Criterio | Requisito |
 |---|---|---|
 | AC-CFG-01 | Dato un file YAML valido con tutti i campi, restituisce un oggetto config tipizzato con i valori corretti. | REQ-CFG-01 |
-| AC-CFG-02 | Dato un file YAML con solo `service.name`, applica tutti i default (livello INFO, sampleRate 1.0, tracer abilitato, namespace Default, captureColdStart true). | REQ-CFG-05 |
+| AC-CFG-02 | Dato un file YAML senza `service.name`, il valore di default viene estratto dal campo `name` di `package.json` (TS) o `composer.json` (PHP) del progetto consumatore. Tutti gli altri default sono applicati (livello INFO, sampleRate 1.0, tracer abilitato, namespace Default, captureColdStart true). | REQ-CFG-05 |
 | AC-CFG-03 | Con `POWERTOOLS_LOG_LEVEL=DEBUG` impostato, il campo `logger.level` nel config e' `"DEBUG"` indipendentemente dal valore YAML. | REQ-CFG-02 |
 | AC-CFG-04 | Con `POWERTOOLS_SERVICE_NAME=override-name`, il campo `service.name` e' `"override-name"`. | REQ-CFG-02 |
 | AC-CFG-05 | Con `Firstance_OBS_SAMPLE_RATE=0.05` (stringa), il campo `logger.sampleRate` e' il numero `0.05`. | REQ-CFG-02 |
-| AC-CFG-06 | Se il file YAML non esiste, lancia un'eccezione con il path nel messaggio. | REQ-CFG-03 |
-| AC-CFG-07 | Se il YAML manca del campo obbligatorio `service.name`, lancia un errore di validazione. | REQ-CFG-04 |
+| AC-CFG-06 | Se il file YAML non esiste, il ConfigLoader tenta di crearlo con valori di default (incluso `service.name` da `package.json`/`composer.json`). Se la creazione fallisce, emette un warning non bloccante e prosegue con i default in memoria. | REQ-CFG-03 |
+| AC-CFG-07 | Se il YAML manca del campo `service.name`, il ConfigLoader usa come default il valore di `name` da `package.json` (TS) o `composer.json` (PHP) del progetto consumatore, senza lanciare errore. | REQ-CFG-04 |
 | AC-CFG-08 | Se `logger.level` contiene un valore non valido (es. `"VERBOSE"`), lancia un errore di validazione. | REQ-CFG-04 |
 | AC-CFG-09 | TS e PHP producono oggetti config equivalenti dati gli stessi input YAML e le stesse variabili d'ambiente. | REQ-CFG-06 |
 

@@ -7,7 +7,7 @@ Disponibile in **TypeScript** (npm) e **PHP** (Composer). Entrambe le implementa
 
 ---
 
-## Quick Start — TypeScript (< 5 minuti)
+## Quick Start — TypeScript
 
 ### 1. Installa come dipendenza locale
 
@@ -56,7 +56,7 @@ export { handler };
 
 ---
 
-## Quick Start — PHP (< 5 minuti)
+## Quick Start — PHP
 
 ### 1. Installa come dipendenza locale
 
@@ -216,4 +216,4 @@ bash tests/cross-language-test.sh
 
 ## Licenza
 
-MIT-0 — Uso interno Firstance. Nessuna restrizione sull'uso, la modifica e la distribuzione.
+MIT-0 — Nessuna restrizione sull'uso, la modifica e la distribuzione.
