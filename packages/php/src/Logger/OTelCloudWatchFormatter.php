@@ -34,12 +34,15 @@ final class OTelCloudWatchFormatter extends JsonFormatter
                 'cloud.provider' => 'aws',
                 'cloud.region' => $this->region,
             ],
-            'Attributes' => array_merge(
-                [
-                    'cold_start' => $record->extra['cold_start'] ?? null,
-                    'aws_request_id' => $record->extra['aws_request_id'] ?? null,
-                ],
-                $record->context,
+            'Attributes' => array_filter(
+                array_merge(
+                    [
+                        'cold_start' => $record->extra['cold_start'] ?? null,
+                        'aws_request_id' => $record->extra['aws_request_id'] ?? null,
+                    ],
+                    $record->context,
+                ),
+                static fn (mixed $v): bool => $v !== null,
             ),
         ];
 
