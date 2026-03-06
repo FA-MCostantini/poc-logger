@@ -28,6 +28,8 @@ logs/
 
 # PhPStorm
 .idea/
+#Serena
+.serena/
 
 # OS
 *.Zone.Identifier
