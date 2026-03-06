@@ -64,23 +64,35 @@ final class ConfigSchema
         );
     }
 
+    /**
+     * @param array<string, mixed> $array
+     */
     private static function arrayGet(array $array, string $key, mixed $default): mixed
     {
         return array_key_exists($key, $array) ? $array[$key] : $default;
     }
 
+    /**
+     * @param array<string, mixed> $array
+     */
     private static function stringOrDefault(array $array, string $key, string $default): string
     {
         $value = self::arrayGet($array, $key, $default);
         return is_string($value) ? $value : $default;
     }
 
+    /**
+     * @param array<string, mixed> $array
+     */
     private static function floatOrDefault(array $array, string $key, float $default): float
     {
         $value = self::arrayGet($array, $key, $default);
         return is_numeric($value) ? (float) $value : $default;
     }
 
+    /**
+     * @param array<string, mixed> $array
+     */
     private static function boolOrDefault(array $array, string $key, bool $default): bool
     {
         $value = self::arrayGet($array, $key, $default);

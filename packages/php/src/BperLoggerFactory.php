@@ -34,7 +34,9 @@ final class BperLoggerFactory
             region: $region,
         );
 
-        $handler = new StreamHandler('php://stdout', Level::fromName($config->logLevel));
+        /** @var 'DEBUG'|'INFO'|'WARNING'|'ERROR'|'CRITICAL'|'ALERT'|'EMERGENCY' $levelName */
+        $levelName = $config->logLevel === 'WARN' ? 'WARNING' : $config->logLevel;
+        $handler = new StreamHandler('php://stdout', Level::fromName($levelName));
         $handler->setFormatter($formatter);
 
         $logger = new Logger($config->serviceName);
