@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import { OTelLogFormatter } from '../../../src/logger/otel-formatter.js';
-import { LogItem } from '@aws-lambda-powertools/logger';
 import type { UnformattedAttributes } from '@aws-lambda-powertools/logger/types';
 
 function makeAttributes(overrides: Partial<UnformattedAttributes> = {}): UnformattedAttributes {
@@ -19,6 +18,7 @@ function makeAttributes(overrides: Partial<UnformattedAttributes> = {}): Unforma
       invokedFunctionArn: 'arn:aws:lambda:eu-south-1:123456:function:my-lambda',
       memoryLimitInMB: 128,
       awsRequestId: 'req-123',
+      tenantId: '',
       coldStart: true,
     },
     ...overrides,
