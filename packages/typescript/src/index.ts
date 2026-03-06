@@ -20,3 +20,6 @@ export type { MiddlewareChainOptions } from './middleware/middy-chain.js';
 // Factory (main entry point)
 export { createFirstanceLogger } from './factory.js';
 export type { FirstanceLoggerOptions, FirstanceObservability } from './factory.js';
+
+// Re-export middy for consumer convenience
+export { default as middy } from '@middy/core';

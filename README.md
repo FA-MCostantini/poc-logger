@@ -27,6 +27,8 @@ Oppure aggiungi manualmente al tuo `package.json`:
 
 > La compilazione TypeScript avviene automaticamente durante l'installazione tramite lo script `prepare`.
 
+> Tutte le dipendenze necessarie (`@middy/core`, `@aws-lambda-powertools/*`, `@types/aws-lambda`) vengono installate automaticamente — non è necessario aggiungerle al tuo progetto.
+
 ### 2. Crea `config.yaml`
 
 ```yaml
@@ -52,13 +54,13 @@ metrics:
 ### 3. Usa nel tuo handler
 
 ```typescript
-import { createFirstanceLogger } from 'poc-logger';
-import middy from '@middy/core';
+import { createFirstanceLogger, middy } from 'poc-logger';
+import type { S3Event, Context } from 'aws-lambda';
 
 const obs = createFirstanceLogger({ configPath: './config.yaml' });
 
-const handler = middy(async (event, context) => {
-  obs.logger.info('Processing event', { eventType: event.type });
+const handler = middy(async (event: S3Event, context: Context) => {
+  obs.logger.info('Processing event', { eventType: event.Records[0].eventName });
   return { statusCode: 200 };
 }).use(obs.middleware());
 
