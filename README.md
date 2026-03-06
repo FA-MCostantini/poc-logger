@@ -9,12 +9,23 @@ Disponibile in **TypeScript** (npm) e **PHP** (Composer). Entrambe le implementa
 
 ## Quick Start — TypeScript
 
-### 1. Installa come dipendenza locale
+### 1. Installa come dipendenza
 
 ```bash
-# Dalla root del tuo progetto Lambda
-npm install /percorso/assoluto/firstance-lambda-obs/packages/typescript
+npm install git+https://github.com/FA-MCostantini/poc-logger.git
 ```
+
+Oppure aggiungi manualmente al tuo `package.json`:
+
+```json
+{
+  "dependencies": {
+    "poc-logger": "git+https://github.com/FA-MCostantini/poc-logger.git"
+  }
+}
+```
+
+> La compilazione TypeScript avviene automaticamente durante l'installazione tramite lo script `prepare`.
 
 ### 2. Crea `config.yaml`
 
@@ -41,7 +52,7 @@ metrics:
 ### 3. Usa nel tuo handler
 
 ```typescript
-import { createFirstanceLogger } from '@firstance/lambda-obs';
+import { createFirstanceLogger } from 'poc-logger';
 import middy from '@middy/core';
 
 const obs = createFirstanceLogger({ configPath: './config.yaml' });
@@ -58,7 +69,7 @@ export { handler };
 
 ## Quick Start — PHP
 
-### 1. Installa come dipendenza locale
+### 1. Installa come dipendenza
 
 Aggiungi al tuo `composer.json`:
 
@@ -66,18 +77,18 @@ Aggiungi al tuo `composer.json`:
 {
   "repositories": [
     {
-      "type": "path",
-      "url": "/percorso/assoluto/firstance-lambda-obs/packages/php"
+      "type": "vcs",
+      "url": "https://github.com/FA-MCostantini/poc-logger.git"
     }
   ],
   "require": {
-    "firstance/lambda-obs": "*"
+    "firstance/lambda-obs": "dev-main"
   }
 }
 ```
 
 ```bash
-composer install
+composer update
 ```
 
 ### 2. Crea `config.yaml`
@@ -150,20 +161,26 @@ Le variabili d'ambiente hanno precedenza sui valori nel file `config.yaml` (12-f
 ## Struttura del monorepo
 
 ```
-firstance-lambda-obs/
+poc-logger/
+├── package.json              # Entry point npm (installa da git)
+├── composer.json             # Entry point Composer (installa da git)
+├── architecture.mermaid      # Diagramma architetturale
 ├── packages/
-│   ├── typescript/       # Pacchetto npm (@firstance/lambda-obs)
+│   ├── typescript/           # Sorgenti TypeScript
 │   │   ├── src/
-│   │   └── tests/
-│   └── php/              # Pacchetto Composer (firstance/lambda-obs)
+│   │   ├── tests/
+│   │   ├── package.json      # Dipendenze e build interne
+│   │   └── tsconfig.json
+│   └── php/                  # Sorgenti PHP
 │       ├── src/
-│       └── tests/
+│       ├── tests/
+│       └── composer.json     # Dipendenze interne
 ├── shared/
 │   ├── schemas/
-│   │   └── config-schema.json   # JSON Schema condiviso
-│   └── config.example.yaml      # Template di configurazione
-├── tests/                        # Test cross-language
-└── docs/                         # Documentazione tecnica
+│   │   └── config-schema.json
+│   └── config.example.yaml
+├── tests/                    # Test cross-language
+└── docs/                     # Documentazione tecnica
 ```
 
 ---
@@ -175,7 +192,6 @@ Non sono richieste installazioni locali di Node o PHP. Tutti i test girano via D
 ### TypeScript
 
 ```bash
-# Build e run test suite
 docker build -t firstance-obs-ts packages/typescript \
   -f packages/typescript/tests/Dockerfile
 
@@ -185,7 +201,6 @@ docker run --rm firstance-obs-ts
 ### PHP
 
 ```bash
-# Build e run test suite
 docker build -t firstance-obs-php packages/php \
   -f packages/php/tests/Dockerfile
 
