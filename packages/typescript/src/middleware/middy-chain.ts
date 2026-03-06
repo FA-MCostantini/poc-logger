@@ -1,7 +1,7 @@
 import { injectLambdaContext } from '@aws-lambda-powertools/logger/middleware';
 import { captureLambdaHandler } from '@aws-lambda-powertools/tracer/middleware';
 import { logMetrics } from '@aws-lambda-powertools/metrics/middleware';
-import type { MiddlewareLikeObj } from '@aws-lambda-powertools/commons/types';
+import type { MiddlewareObj } from '@middy/core';
 import type { Logger } from '@aws-lambda-powertools/logger';
 import type { Tracer } from '@aws-lambda-powertools/tracer';
 import type { Metrics } from '@aws-lambda-powertools/metrics';
@@ -23,7 +23,7 @@ export interface MiddlewareChainOptions {
  */
 export function createMiddlewareChain(
   options: MiddlewareChainOptions
-): MiddlewareLikeObj {
+): MiddlewareObj {
   const tracerMw = captureLambdaHandler(options.tracer);
   const loggerMw = injectLambdaContext(options.logger, {
     logEvent: options.logEvent ?? false,

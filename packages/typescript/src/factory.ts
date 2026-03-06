@@ -1,7 +1,7 @@
 import { Logger } from '@aws-lambda-powertools/logger';
 import type { Tracer } from '@aws-lambda-powertools/tracer';
 import type { Metrics } from '@aws-lambda-powertools/metrics';
-import type { MiddlewareLikeObj } from '@aws-lambda-powertools/commons/types';
+import type { MiddlewareObj } from '@middy/core';
 import { loadConfig } from './config/loader.js';
 import { OTelLogFormatter } from './logger/otel-formatter.js';
 import { createTracer } from './tracer/tracer-factory.js';
@@ -16,7 +16,7 @@ export interface FirstanceObservability {
   readonly logger: Logger;
   readonly tracer: Tracer;
   readonly metrics: Metrics;
-  middleware(options?: { logEvent?: boolean }): MiddlewareLikeObj;
+  middleware(options?: { logEvent?: boolean }): MiddlewareObj;
 }
 
 export function createFirstanceLogger(options: FirstanceLoggerOptions): FirstanceObservability {

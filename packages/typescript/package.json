@@ -4,6 +4,7 @@
   "description": "Observability unificata per AWS Lambda — Logger, Tracer, Metrics con output OTel",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "type": "module",
   "private": true,
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
