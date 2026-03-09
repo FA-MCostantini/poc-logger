@@ -1,13 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import { createTracer } from '../../../src/tracer/tracer-factory.js';
-import type { FirstanceConfig } from '../../../src/config/types.js';
 
-function makeConfig(overrides: Partial<FirstanceConfig['tracer']> = {}): FirstanceConfig {
+function makeConfig(overrides: { enabled?: boolean; captureHTTPS?: boolean } = {}) {
   return {
-    service: { name: 'test-svc', version: '1.0.0' },
-    logger: { level: 'INFO', sampleRate: 1, persistentKeys: {} },
+    logger: { level: 'INFO' as const, sampleRate: 1, persistentKeys: {} },
     tracer: { enabled: true, captureHTTPS: true, ...overrides },
     metrics: { namespace: 'TestNS', captureColdStart: true },
+    serviceName: 'test-svc',
   };
 }
 

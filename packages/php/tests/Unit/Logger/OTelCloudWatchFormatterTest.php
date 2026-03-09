@@ -106,6 +106,14 @@ final class OTelCloudWatchFormatterTest extends TestCase
         $this->assertTrue($output['Attributes']['cold_start']);
     }
 
+    public function testIncludesFaasNameFromExtra(): void
+    {
+        $record = $this->makeRecord('test', Level::Info, extra: ['faas.name' => 'my-lambda']);
+        $output = json_decode($this->formatter->format($record), true);
+
+        $this->assertSame('my-lambda', $output['Resource']['faas.name']);
+    }
+
     public function testHandlesMissingLambdaContextGracefully(): void
     {
         $record = $this->makeRecord('test', Level::Info);

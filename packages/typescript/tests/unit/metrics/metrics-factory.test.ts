@@ -1,13 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import { createMetrics } from '../../../src/metrics/metrics-factory.js';
-import type { FirstanceConfig } from '../../../src/config/types.js';
 
-function makeConfig(overrides: Partial<FirstanceConfig['metrics']> = {}): FirstanceConfig {
+function makeConfig(overrides: { namespace?: string; captureColdStart?: boolean } = {}) {
   return {
-    service: { name: 'test-svc', version: '1.0.0' },
-    logger: { level: 'INFO', sampleRate: 1, persistentKeys: {} },
+    logger: { level: 'INFO' as const, sampleRate: 1, persistentKeys: {} },
     tracer: { enabled: true, captureHTTPS: true },
     metrics: { namespace: 'TestNS', captureColdStart: true, ...overrides },
+    serviceName: 'test-svc',
   };
 }
 
