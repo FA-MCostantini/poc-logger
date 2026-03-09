@@ -55,11 +55,11 @@ metrics:
 
 ```typescript
 import { createFirstanceLogger, middy } from 'poc-logger';
-import type { S3Event, Context } from 'aws-lambda';
+import type { S3Event } from 'aws-lambda';
 
 const obs = createFirstanceLogger({ configPath: './config.yaml' });
 
-const handler = middy(async (event: S3Event, context: Context) => {
+const handler = middy(async (event: S3Event) => {
   obs.logger.info('Processing event', { eventType: event.Records[0].eventName });
   return { statusCode: 200 };
 }).use(obs.middleware());

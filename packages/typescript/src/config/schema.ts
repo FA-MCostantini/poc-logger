@@ -10,18 +10,18 @@ const serviceSchema = z.object({
 const loggerSchema = z.object({
   level: logLevelSchema.default('INFO'),
   sampleRate: z.number().min(0).max(1).default(1.0),
-  persistentKeys: z.record(z.string()).default({}),
-}).default({});
+  persistentKeys: z.record(z.string(), z.string()).default({}),
+}).prefault({});
 
 const tracerSchema = z.object({
   enabled: z.boolean().default(true),
   captureHTTPS: z.boolean().default(true),
-}).default({});
+}).prefault({});
 
 const metricsSchema = z.object({
   namespace: z.string().default('Default'),
   captureColdStart: z.boolean().default(true),
-}).default({});
+}).prefault({});
 
 export const configSchema = z.object({
   service: serviceSchema,

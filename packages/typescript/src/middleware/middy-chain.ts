@@ -33,17 +33,17 @@ export function createMiddlewareChain(
   });
 
   return {
-    before: async (request) => {
+    before: async (request: any) => {
       await tracerMw.before?.(request);
       await loggerMw.before?.(request);
       await metricsMw.before?.(request);
     },
-    after: async (request) => {
+    after: async (request: any) => {
       await metricsMw.after?.(request);
       await loggerMw.after?.(request);
       await tracerMw.after?.(request);
     },
-    onError: async (request) => {
+    onError: async (request: any) => {
       await tracerMw.onError?.(request);
     },
   };
