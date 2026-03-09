@@ -1,6 +1,6 @@
 {
   "name": "poc-logger",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "poc-logger — Observability unificata per AWS Lambda con output OTel",
   "main": "packages/typescript/dist/cjs/index.js",
   "module": "packages/typescript/dist/esm/index.js",
