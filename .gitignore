@@ -27,6 +27,9 @@ logs/
 #Serena
 .serena/
 
+# Worktrees
+.worktrees/
+
 # OS
 *.Zone.Identifier
 .DS_Store
