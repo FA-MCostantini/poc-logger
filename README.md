@@ -86,7 +86,7 @@ Aggiungi al tuo `composer.json`:
     }
   ],
   "require": {
-    "firstance/lambda-obs": "dev-main"
+    "firstance/lambda-obs": "^0.2.0"
   }
 }
 ```
@@ -94,6 +94,8 @@ Aggiungi al tuo `composer.json`:
 ```bash
 composer update
 ```
+
+> Composer risolve le versioni direttamente dai git tag (es. `v0.2.0` → `0.2.0`). Consulta i [rilasci](https://github.com/FA-MCostantini/poc-logger/tags) per la versione più recente.
 
 ### 2. Crea `config.yaml`
 
