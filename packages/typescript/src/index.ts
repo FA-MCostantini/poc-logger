@@ -3,6 +3,13 @@ export { loadConfig } from './config/loader.js';
 export { configSchema } from './config/schema.js';
 export type { FirstanceConfig, LogLevel } from './config/types.js';
 
+// Service Discovery
+export { discoverService } from './service-discovery.js';
+export type { ServiceInfo } from './service-discovery.js';
+
+// Version
+export { SDK_NAME, SDK_VERSION } from './version.js';
+
 // Logger
 export { OTelLogFormatter } from './logger/otel-formatter.js';
 export type { OTelLogRecord, OTelResource, SeverityText } from './logger/types.js';

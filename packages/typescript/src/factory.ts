@@ -7,6 +7,8 @@ import { OTelLogFormatter } from './logger/otel-formatter.js';
 import { createTracer } from './tracer/tracer-factory.js';
 import { createMetrics } from './metrics/metrics-factory.js';
 import { createMiddlewareChain } from './middleware/middy-chain.js';
+import { discoverService } from './service-discovery.js';
+import { SDK_NAME, SDK_VERSION } from './version.js';
 
 export interface FirstanceLoggerOptions {
   readonly configPath: string;
@@ -21,21 +23,25 @@ export interface FirstanceObservability {
 
 export function createFirstanceLogger(options: FirstanceLoggerOptions): FirstanceObservability {
   const config = loadConfig({ configPath: options.configPath });
+  const service = discoverService();
 
   const formatter = new OTelLogFormatter({
-    serviceVersion: config.service.version,
+    serviceName: service.name,
+    serviceVersion: service.version,
+    sdkName: SDK_NAME,
+    sdkVersion: SDK_VERSION,
   });
 
   const logger = new Logger({
-    serviceName: config.service.name,
+    serviceName: service.name,
     logLevel: config.logger.level,
     sampleRateValue: config.logger.sampleRate,
     persistentLogAttributes: config.logger.persistentKeys,
     logFormatter: formatter,
   });
 
-  const tracer = createTracer(config);
-  const metrics = createMetrics(config);
+  const tracer = createTracer({ ...config, serviceName: service.name });
+  const metrics = createMetrics({ ...config, serviceName: service.name });
 
   return {
     logger,
