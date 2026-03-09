@@ -12,6 +12,8 @@ final class OTelCloudWatchFormatter extends JsonFormatter
     public function __construct(
         private readonly string $serviceName,
         private readonly string $serviceVersion,
+        private readonly string $sdkName,
+        private readonly string $sdkVersion,
         private readonly string $region,
     ) {
         parent::__construct();
@@ -29,10 +31,16 @@ final class OTelCloudWatchFormatter extends JsonFormatter
             'Resource' => [
                 'service.name' => $this->serviceName,
                 'service.version' => $this->serviceVersion,
+                'telemetry.sdk.name' => $this->sdkName,
+                'telemetry.sdk.version' => $this->sdkVersion,
                 'service.language' => 'php',
                 'faas.name' => $record->extra['faas.name'] ?? '',
+                'faas.version' => getenv('AWS_LAMBDA_FUNCTION_VERSION') ?: '',
+                'faas.memory' => getenv('AWS_LAMBDA_FUNCTION_MEMORY_SIZE') ?: '',
+                'faas.instance' => getenv('AWS_LAMBDA_LOG_STREAM_NAME') ?: '',
                 'cloud.provider' => 'aws',
                 'cloud.region' => $this->region,
+                'process.runtime.version' => PHP_VERSION,
             ],
             'Attributes' => array_filter(
                 array_merge(
