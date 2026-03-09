@@ -1,9 +1,22 @@
 {
   "name": "poc-logger",
-  "version": "1.0.0",
+  "version": "0.2.0",
   "description": "Observability unificata per AWS Lambda — Logger, Tracer, Metrics con output OTel",
-  "main": "packages/typescript/dist/index.js",
-  "types": "packages/typescript/dist/index.d.ts",
+  "main": "packages/typescript/dist/cjs/index.js",
+  "module": "packages/typescript/dist/esm/index.js",
+  "types": "packages/typescript/dist/esm/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./packages/typescript/dist/esm/index.d.ts",
+        "default": "./packages/typescript/dist/esm/index.js"
+      },
+      "require": {
+        "types": "./packages/typescript/dist/cjs/index.d.ts",
+        "default": "./packages/typescript/dist/cjs/index.js"
+      }
+    }
+  },
   "scripts": {
     "build": "cd packages/typescript && npm install && npm run build",
     "prepare": "npm run build"

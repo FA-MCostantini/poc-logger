@@ -1,6 +1,6 @@
 {
   "name": "@firstance/lambda-obs",
-  "version": "1.0.0",
+  "version": "0.2.0",
   "description": "Observability unificata per AWS Lambda — Logger, Tracer, Metrics con output OTel",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",

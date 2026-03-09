@@ -12,7 +12,7 @@ Disponibile in **TypeScript** (npm) e **PHP** (Composer). Entrambe le implementa
 ### 1. Installa come dipendenza
 
 ```bash
-npm install git+https://github.com/FA-MCostantini/poc-logger.git
+npm install git+https://github.com/FA-MCostantini/poc-logger.git#v0.2.0
 ```
 
 Oppure aggiungi manualmente al tuo `package.json`:
@@ -20,10 +20,12 @@ Oppure aggiungi manualmente al tuo `package.json`:
 ```json
 {
   "dependencies": {
-    "poc-logger": "git+https://github.com/FA-MCostantini/poc-logger.git"
+    "poc-logger": "github:FA-MCostantini/poc-logger#v0.2.0"
   }
 }
 ```
+
+> Le versioni seguono git tag semver (es. `v0.2.0`). Consulta i [rilasci](https://github.com/FA-MCostantini/poc-logger/tags) per la versione più recente.
 
 > La compilazione TypeScript avviene automaticamente durante l'installazione tramite lo script `prepare`.
 
