@@ -1,9 +1,13 @@
 import { Metrics } from '@aws-lambda-powertools/metrics';
 import type { FirstanceConfig } from '../config/types.js';
 
-export function createMetrics(config: FirstanceConfig): Metrics {
+interface MetricsOptions extends FirstanceConfig {
+  readonly serviceName: string;
+}
+
+export function createMetrics(config: MetricsOptions): Metrics {
   return new Metrics({
     namespace: config.metrics.namespace,
-    serviceName: config.service.name,
+    serviceName: config.serviceName,
   });
 }

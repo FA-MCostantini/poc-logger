@@ -1,9 +1,13 @@
 import { Tracer } from '@aws-lambda-powertools/tracer';
 import type { FirstanceConfig } from '../config/types.js';
 
-export function createTracer(config: FirstanceConfig): Tracer {
+interface TracerOptions extends FirstanceConfig {
+  readonly serviceName: string;
+}
+
+export function createTracer(config: TracerOptions): Tracer {
   return new Tracer({
-    serviceName: config.service.name,
+    serviceName: config.serviceName,
     enabled: config.tracer.enabled,
     captureHTTPsRequests: config.tracer.captureHTTPS,
   });
