@@ -1,6 +1,6 @@
 {
   "name": "poc-logger",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "poc-logger — Observability unificata per AWS Lambda con output OTel",
   "main": "packages/typescript/dist/cjs/index.js",
   "module": "packages/typescript/dist/esm/index.js",
@@ -13,23 +13,23 @@
         "default": "./packages/typescript/dist/esm/index.js"
       },
       "require": {
-        "types": "./packages/typescript/dist/cjs/index.d.ts",
+        "types": "./packages/typescript/dist/esm/index.d.ts",
         "default": "./packages/typescript/dist/cjs/index.js"
       }
     }
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json && tsc -p tsconfig.cjs.json && echo '{\"type\":\"commonjs\"}' > packages/typescript/dist/cjs/package.json",
+    "build": "tsc -p tsconfig.build.json && node build-cjs.mjs",
     "prepare": "npm run build",
-    "test": "vitest run",
+    "test": "vitest run && node tests/smoke-cjs.cjs",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "version": "npm version $npm_package_version --no-git-tag-version --prefix packages/typescript 2>/dev/null; true"
   },
   "dependencies": {
     "@aws-lambda-powertools/logger": "^2.31.0",
-    "@aws-lambda-powertools/tracer": "^2.31.0",
     "@aws-lambda-powertools/metrics": "^2.31.0",
+    "@aws-lambda-powertools/tracer": "^2.31.0",
     "@middy/core": "^7.1.3",
     "@types/aws-lambda": "^8.10.0",
     "dotenv": "^17.3.1",
@@ -39,6 +39,7 @@
   "devDependencies": {
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^22.19.15",
+    "esbuild": "^0.27.3",
     "typescript": "^5.4.0",
     "vitest": "^4.0.18"
   },

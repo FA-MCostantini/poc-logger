@@ -67,7 +67,7 @@ final class ConfigLoaderTest extends TestCase
         try {
             $config = ConfigLoader::load($tempPath);
             $this->assertSame('poc-logger', $config->serviceName);
-            $this->assertSame('0.2.1', $config->serviceVersion);
+            $this->assertMatchesRegularExpression('/^\d+\.\d+\.\d+/', $config->serviceVersion);
             $this->assertSame('INFO', $config->logLevel);
             $this->assertSame(1.0, $config->logSampleRate);
             $this->assertTrue($config->tracerEnabled);

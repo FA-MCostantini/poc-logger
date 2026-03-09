@@ -66,45 +66,34 @@ Composer risolve le versioni direttamente dai git tag (es. `v0.2.1` -> `0.2.1`).
 ## 2. Testing con Docker
 
 Non sono richieste installazioni locali di Node.js o PHP.
-I Dockerfiles usano il contesto dalla root del monorepo.
+Il `docker-compose.yml` nella root del monorepo definisce i servizi di test
+con `network: host` per evitare problemi di rete bridge su WSL2.
 
-### TypeScript — build e test
-
-```bash
-# Dalla root del monorepo
-docker build \
-  -t firstance-obs-ts \
-  -f packages/typescript/tests/Dockerfile \
-  .
-
-docker run --rm firstance-obs-ts
-```
-
-Output atteso: tutti i test Vitest superati con reporter verbose.
-
-### PHP — build e test
+### Build e test (con Docker Compose)
 
 ```bash
-docker build \
-  -t firstance-obs-php \
-  -f packages/php/tests/Dockerfile \
-  .
+# Build di tutte le immagini
+docker compose build
 
-docker run --rm firstance-obs-php
-```
+# Unit test TypeScript
+docker compose run --rm ts-test
 
-Output atteso: tutti i test PHPUnit superati con formato testdox.
+# Unit test PHP
+docker compose run --rm php-test
 
-### Test cross-language (output JSON identico)
-
-```bash
+# Test cross-language (output JSON identico)
 bash tests/cross-language-test.sh
 ```
 
-Questo script:
-1. Esegue entrambi i container
-2. Cattura un log di esempio da ciascuno
-3. Confronta la struttura JSON — il test passa solo se identica
+### Build manuale (senza Docker Compose)
+
+```bash
+docker build --network=host -t firstance-ts-test -f packages/typescript/tests/Dockerfile .
+docker build --network=host -t firstance-php-test -f packages/php/tests/Dockerfile .
+
+docker run --rm firstance-ts-test
+docker run --rm firstance-php-test
+```
 
 ---
 

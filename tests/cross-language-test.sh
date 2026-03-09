@@ -8,8 +8,7 @@ echo "=== Cross-Language OTel Output Test ==="
 echo ""
 
 # Prerequisite: firstance-ts-test and firstance-php-test images must be built first
-# docker build -t firstance-ts-test -f packages/typescript/tests/Dockerfile .
-# docker build -t firstance-php-test -f packages/php/tests/Dockerfile .
+# docker compose build
 
 echo "[1/4] Running TypeScript OTel log emission..."
 TS_OUTPUT=$(docker run --rm \

@@ -11,7 +11,7 @@ Vedere anche: [ACCEPTANCE_CRITERIA.md](ACCEPTANCE_CRITERIA.md)
 
 ## Prerequisiti
 
-- Docker Engine >= 24.0
+- Docker Engine >= 24.0 con Docker Compose V2
 - Bash >= 5.0 (per lo script cross-language)
 - Python 3 (per il parsing JSON nel cross-language test)
 
@@ -20,6 +20,10 @@ Vedere anche: [ACCEPTANCE_CRITERIA.md](ACCEPTANCE_CRITERIA.md)
 - PHP / Composer
 - AWS CLI / credenziali AWS
 
+> **Nota WSL2**: su ambienti WSL2 la rete bridge di Docker puo' causare timeout durante
+> il download delle dipendenze npm. Il `docker-compose.yml` risolve il problema usando
+> `network: host` per il build e `network_mode: host` per il run.
+
 ---
 
 ## 1. Test TypeScript
@@ -27,18 +31,30 @@ Vedere anche: [ACCEPTANCE_CRITERIA.md](ACCEPTANCE_CRITERIA.md)
 ### Build dell'immagine
 
 ```bash
-docker build \
+docker compose build ts-test
+```
+
+Oppure manualmente:
+
+```bash
+docker build --network=host \
   -t firstance-ts-test \
   -f packages/typescript/tests/Dockerfile \
   .
 ```
 
-L'immagine usa `node:20-alpine`. Il Dockerfile:
-1. Copia `package.json` e installa le dipendenze con `npm install`
-2. Copia `tsconfig.json`, `tsconfig.build.json`, `tsconfig.cjs.json`, `vitest.config.ts`, `packages/typescript/src/` e `packages/typescript/tests/`
+L'immagine usa `node:22-alpine`. Il Dockerfile:
+1. Copia `package.json` e `package-lock.json`, installa le dipendenze con `npm ci`
+2. Copia `tsconfig.json`, `vitest.config.ts`, `packages/typescript/src/` e `packages/typescript/tests/`
 3. Il CMD di default esegue `npx vitest run --reporter=verbose`
 
 ### Esecuzione test
+
+```bash
+docker compose run --rm ts-test
+```
+
+Oppure manualmente:
 
 ```bash
 docker run --rm firstance-ts-test
@@ -70,7 +86,13 @@ docker run --rm -it \
 ### Build dell'immagine
 
 ```bash
-docker build \
+docker compose build php-test
+```
+
+Oppure manualmente:
+
+```bash
+docker build --network=host \
   -t firstance-php-test \
   -f packages/php/tests/Dockerfile \
   .
@@ -83,6 +105,12 @@ L'immagine usa `php:8.2-cli-alpine`. Il Dockerfile:
 4. Il CMD di default esegue `vendor/bin/phpunit --testdox`
 
 ### Esecuzione test
+
+```bash
+docker compose run --rm php-test
+```
+
+Oppure manualmente:
 
 ```bash
 docker run --rm firstance-php-test
@@ -157,19 +185,18 @@ PHP output: {"Timestamp":"...","SeverityText":"INFO",...}
 Sequenza raccomandata per un pipeline CI:
 
 ```bash
-# 1. Build
-docker build -t firstance-ts-test -f packages/typescript/tests/Dockerfile .
-docker build -t firstance-php-test -f packages/php/tests/Dockerfile .
+# 1. Build di tutte le immagini
+docker compose build
 
 # 2. Unit tests
-docker run --rm firstance-ts-test
-docker run --rm firstance-php-test
+docker compose run --rm ts-test
+docker compose run --rm php-test
 
 # 3. Static analysis (PHP)
-docker run --rm firstance-php-test vendor/bin/phpstan analyse packages/php/src --level=8 --no-progress
+docker compose run --rm php-test vendor/bin/phpstan analyse packages/php/src --level=8 --no-progress
 
 # 4. Coverage (TS)
-docker run --rm firstance-ts-test npx vitest run --coverage
+docker compose run --rm ts-test npx vitest run --coverage
 
 # 5. Cross-language parity
 bash tests/cross-language-test.sh

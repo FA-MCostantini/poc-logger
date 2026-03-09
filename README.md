@@ -168,6 +168,7 @@ Le variabili d'ambiente hanno precedenza sui valori nel file `config.yaml` (12-f
 
 ```
 poc-logger/
+├── docker-compose.yml        # Servizi Docker test (network: host)
 ├── package.json              # Dipendenze npm, script build/test
 ├── composer.json             # Dipendenze Composer, autoload PSR-4
 ├── tsconfig.json             # Configurazione TypeScript base
@@ -196,26 +197,19 @@ poc-logger/
 ## Testing con Docker
 
 Non sono richieste installazioni locali di Node o PHP. Tutti i test girano via Docker.
-
-### TypeScript
-
-```bash
-docker build -t firstance-obs-ts -f packages/typescript/tests/Dockerfile .
-
-docker run --rm firstance-obs-ts
-```
-
-### PHP
+Il `docker-compose.yml` nella root gestisce build e rete (`network: host` per WSL2).
 
 ```bash
-docker build -t firstance-obs-php -f packages/php/tests/Dockerfile .
+# Build di tutte le immagini
+docker compose build
 
-docker run --rm firstance-obs-php
-```
+# Unit test TypeScript
+docker compose run --rm ts-test
 
-### Test cross-language (output JSON identico)
+# Unit test PHP
+docker compose run --rm php-test
 
-```bash
+# Test cross-language (output JSON identico)
 bash tests/cross-language-test.sh
 ```
 

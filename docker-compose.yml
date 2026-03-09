@@ -1,0 +1,16 @@
+services:
+  ts-test:
+    build:
+      context: .
+      dockerfile: packages/typescript/tests/Dockerfile
+      network: host
+    image: firstance-ts-test
+    network_mode: host
+
+  php-test:
+    build:
+      context: .
+      dockerfile: packages/php/tests/Dockerfile
+      network: host
+    image: firstance-php-test
+    network_mode: host

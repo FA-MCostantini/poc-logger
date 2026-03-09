@@ -5,7 +5,7 @@ RUN apk add --no-cache unzip curl && \
 
 WORKDIR /app
 
-COPY composer.json ./
+COPY composer.json composer.lock ./
 RUN composer install --no-interaction --no-progress
 
 COPY phpunit.xml phpstan.neon ./

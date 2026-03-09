@@ -5,10 +5,6 @@
 vendor/
 node_modules/
 
-# Lock files
-composer.lock
-package-lock.json
-
 # Build output
 dist/
 packages/typescript/dist/
