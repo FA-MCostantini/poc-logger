@@ -68,12 +68,12 @@ echo "PHP keys:"
 echo "$PHP_KEYS"
 echo ""
 
-# Compare (ignoring service.language which differs by design)
-TS_FILTERED=$(echo "$TS_KEYS" | grep -v "service.language" | sort)
-PHP_FILTERED=$(echo "$PHP_KEYS" | grep -v "service.language" | sort)
+# Compare (ignoring language-specific fields)
+TS_FILTERED=$(echo "$TS_KEYS" | grep -v "service.language" | grep -v "process.runtime.version" | sort)
+PHP_FILTERED=$(echo "$PHP_KEYS" | grep -v "service.language" | grep -v "process.runtime.version" | sort)
 
 if [ "$TS_FILTERED" = "$PHP_FILTERED" ]; then
-    echo "[4/4] ✅ PASS — JSON structure is identical (excluding service.language)"
+    echo "[4/4] ✅ PASS — JSON structure is identical (excluding service.language, process.runtime.version)"
 else
     echo "[4/4] ❌ FAIL — JSON structure differs!"
     echo ""

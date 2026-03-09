@@ -12,6 +12,8 @@ use Monolog\Logger;
 $formatter = new OTelCloudWatchFormatter(
     serviceName: 'cross-lang-test',
     serviceVersion: '1.0.0',
+    sdkName: 'poc-logger',
+    sdkVersion: '0.2.3',
     region: '',
 );
 
