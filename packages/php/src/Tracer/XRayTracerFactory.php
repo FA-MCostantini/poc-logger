@@ -9,10 +9,12 @@ use Firstance\LambdaObs\Config\ConfigDTO;
 final class XRayTracerFactory
 {
     private readonly ConfigDTO $config;
+    private readonly string $serviceName;
 
-    public function __construct(ConfigDTO $config)
+    public function __construct(ConfigDTO $config, string $serviceName)
     {
         $this->config = $config;
+        $this->serviceName = $serviceName;
     }
 
     public function isEnabled(): bool
@@ -22,12 +24,7 @@ final class XRayTracerFactory
 
     public function getServiceName(): string
     {
-        return $this->config->serviceName;
-    }
-
-    public function getServiceVersion(): string
-    {
-        return $this->config->serviceVersion;
+        return $this->serviceName;
     }
 
     /**

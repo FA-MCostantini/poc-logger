@@ -6,6 +6,7 @@ namespace Firstance\LambdaObs;
 
 use Firstance\LambdaObs\Config\ConfigDTO;
 use Firstance\LambdaObs\Config\ConfigLoader;
+use Firstance\LambdaObs\Config\ServiceDiscovery;
 use Firstance\LambdaObs\Logger\ColdStartProcessor;
 use Firstance\LambdaObs\Logger\LambdaContextProcessor;
 use Firstance\LambdaObs\Logger\OTelCloudWatchFormatter;
@@ -27,10 +28,14 @@ final class FirstanceLoggerFactory
     public static function createFromConfig(ConfigDTO $config): FirstanceObservability
     {
         $region = getenv('AWS_REGION') ?: '';
+        $serviceName = ServiceDiscovery::serviceName();
+        $serviceVersion = ServiceDiscovery::serviceVersion();
 
         $formatter = new OTelCloudWatchFormatter(
-            serviceName: $config->serviceName,
-            serviceVersion: $config->serviceVersion,
+            serviceName: $serviceName,
+            serviceVersion: $serviceVersion,
+            sdkName: ServiceDiscovery::sdkName(),
+            sdkVersion: ServiceDiscovery::sdkVersion(),
             region: $region,
         );
 
@@ -39,13 +44,13 @@ final class FirstanceLoggerFactory
         $handler = new StreamHandler('php://stdout', Level::fromName($levelName));
         $handler->setFormatter($formatter);
 
-        $logger = new Logger($config->serviceName);
+        $logger = new Logger($serviceName);
         $logger->pushHandler($handler);
         $logger->pushProcessor(new LambdaContextProcessor());
         $logger->pushProcessor(new ColdStartProcessor());
 
-        $tracer = new XRayTracerFactory($config);
-        $metrics = new EmfMetricsEmitter($config);
+        $tracer = new XRayTracerFactory($config, $serviceName);
+        $metrics = new EmfMetricsEmitter($config, $serviceName);
 
         return new FirstanceObservability(
             logger: $logger,

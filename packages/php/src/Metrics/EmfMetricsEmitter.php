@@ -10,14 +10,17 @@ final class EmfMetricsEmitter
 {
     /** @var resource */
     private $outputStream;
+    private readonly string $serviceName;
 
     /**
      * @param resource|null $outputStream Override for testing (defaults to STDOUT)
      */
     public function __construct(
         private readonly ConfigDTO $config,
+        string $serviceName,
         $outputStream = null,
     ) {
+        $this->serviceName = $serviceName;
         $this->outputStream = $outputStream ?? STDOUT;
     }
 
@@ -31,7 +34,7 @@ final class EmfMetricsEmitter
         array $dimensions = [],
     ): void {
         $allDimensions = array_merge(
-            ['service' => $this->config->serviceName],
+            ['service' => $this->serviceName],
             $dimensions,
         );
 
