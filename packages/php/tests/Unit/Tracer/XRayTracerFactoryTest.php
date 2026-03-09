@@ -17,32 +17,32 @@ final class XRayTracerFactoryTest extends TestCase
 
     public function testReportsEnabledFromConfig(): void
     {
-        $factory = new XRayTracerFactory(new ConfigDTO(serviceName: 'test', tracerEnabled: true));
+        $factory = new XRayTracerFactory(new ConfigDTO(tracerEnabled: true), 'test');
         $this->assertTrue($factory->isEnabled());
     }
 
     public function testReportsDisabledFromConfig(): void
     {
-        $factory = new XRayTracerFactory(new ConfigDTO(serviceName: 'test', tracerEnabled: false));
+        $factory = new XRayTracerFactory(new ConfigDTO(tracerEnabled: false), 'test');
         $this->assertFalse($factory->isEnabled());
     }
 
     public function testReturnsServiceName(): void
     {
-        $factory = new XRayTracerFactory(new ConfigDTO(serviceName: 'my-svc'));
+        $factory = new XRayTracerFactory(new ConfigDTO(), 'my-svc');
         $this->assertSame('my-svc', $factory->getServiceName());
     }
 
     public function testReturnsTraceIdFromEnv(): void
     {
         putenv('_X_AMZN_TRACE_ID=1-abc-def');
-        $factory = new XRayTracerFactory(new ConfigDTO(serviceName: 'test'));
+        $factory = new XRayTracerFactory(new ConfigDTO(), 'test');
         $this->assertSame('1-abc-def', $factory->getTraceId());
     }
 
     public function testReturnsNullTraceIdWhenNotSet(): void
     {
-        $factory = new XRayTracerFactory(new ConfigDTO(serviceName: 'test'));
+        $factory = new XRayTracerFactory(new ConfigDTO(), 'test');
         $this->assertNull($factory->getTraceId());
     }
 }

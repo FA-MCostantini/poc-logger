@@ -15,7 +15,6 @@ final class ConfigLoaderTest extends TestCase
     {
         $this->fixturesPath = dirname(__DIR__, 2) . '/Fixtures';
         putenv('POWERTOOLS_LOG_LEVEL');
-        putenv('POWERTOOLS_SERVICE_NAME');
         putenv('Firstance_OBS_SAMPLE_RATE');
         putenv('Firstance_OBS_METRICS_NAMESPACE');
     }
@@ -23,7 +22,6 @@ final class ConfigLoaderTest extends TestCase
     protected function tearDown(): void
     {
         putenv('POWERTOOLS_LOG_LEVEL');
-        putenv('POWERTOOLS_SERVICE_NAME');
         putenv('Firstance_OBS_SAMPLE_RATE');
         putenv('Firstance_OBS_METRICS_NAMESPACE');
     }
@@ -32,8 +30,6 @@ final class ConfigLoaderTest extends TestCase
     {
         $config = ConfigLoader::load($this->fixturesPath . '/config.valid.yaml');
 
-        $this->assertSame('test-service', $config->serviceName);
-        $this->assertSame('2.0.0', $config->serviceVersion);
         $this->assertSame('DEBUG', $config->logLevel);
         $this->assertSame(0.5, $config->logSampleRate);
         $this->assertSame(['team' => 'test-team'], $config->persistentKeys);
@@ -45,9 +41,9 @@ final class ConfigLoaderTest extends TestCase
     {
         $config = ConfigLoader::load($this->fixturesPath . '/config.minimal.yaml');
 
-        $this->assertSame('minimal-service', $config->serviceName);
-        $this->assertSame('0.0.0', $config->serviceVersion);
         $this->assertSame('INFO', $config->logLevel);
+        $this->assertSame(1.0, $config->logSampleRate);
+        $this->assertTrue($config->tracerEnabled);
     }
 
     public function testThrowsOnInvalidConfig(): void
@@ -66,8 +62,6 @@ final class ConfigLoaderTest extends TestCase
 
         try {
             $config = ConfigLoader::load($tempPath);
-            $this->assertSame('poc-logger', $config->serviceName);
-            $this->assertMatchesRegularExpression('/^\d+\.\d+\.\d+/', $config->serviceVersion);
             $this->assertSame('INFO', $config->logLevel);
             $this->assertSame(1.0, $config->logSampleRate);
             $this->assertTrue($config->tracerEnabled);
@@ -78,12 +72,6 @@ final class ConfigLoaderTest extends TestCase
                 unlink($tempPath);
             }
         }
-    }
-
-    public function testUsesProjectNameWhenServiceNameMissing(): void
-    {
-        $config = ConfigLoader::load($this->fixturesPath . '/config.no-service-name.yaml');
-        $this->assertSame('poc-logger', $config->serviceName);
     }
 
     public function testWarnsWhenDefaultConfigCannotBeWritten(): void
@@ -100,7 +88,7 @@ final class ConfigLoaderTest extends TestCase
             restore_error_handler();
         }
 
-        $this->assertSame('poc-logger', $config->serviceName);
+        $this->assertSame('INFO', $config->logLevel);
         $this->assertSame(
             '[firstance-obs] Cannot create default config at /nonexistent-dir/impossible/config.yaml, using in-memory defaults',
             $warningMessage,
@@ -110,13 +98,11 @@ final class ConfigLoaderTest extends TestCase
     public function testEnvOverridesYamlValues(): void
     {
         putenv('POWERTOOLS_LOG_LEVEL=ERROR');
-        putenv('POWERTOOLS_SERVICE_NAME=env-service');
         putenv('Firstance_OBS_SAMPLE_RATE=0.75');
         putenv('Firstance_OBS_METRICS_NAMESPACE=EnvNS');
 
         $config = ConfigLoader::load($this->fixturesPath . '/config.valid.yaml');
 
-        $this->assertSame('env-service', $config->serviceName);
         $this->assertSame('ERROR', $config->logLevel);
         $this->assertSame(0.75, $config->logSampleRate);
         $this->assertSame('EnvNS', $config->metricsNamespace);
@@ -129,6 +115,5 @@ final class ConfigLoaderTest extends TestCase
         $config = ConfigLoader::load($this->fixturesPath . '/config.valid.yaml');
 
         $this->assertSame('WARN', $config->logLevel);
-        $this->assertSame('test-service', $config->serviceName);
     }
 }

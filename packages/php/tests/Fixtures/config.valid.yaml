@@ -1,7 +1,3 @@
-service:
-  name: "test-service"
-  version: "2.0.0"
-
 logger:
   level: "DEBUG"
   sampleRate: 0.5

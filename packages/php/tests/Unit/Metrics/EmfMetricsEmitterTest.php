@@ -101,12 +101,11 @@ final class EmfMetricsEmitterTest extends TestCase
     private function createEmitter(bool $captureColdStart = true): EmfMetricsEmitter
     {
         $config = new ConfigDTO(
-            serviceName: 'test-svc',
             metricsNamespace: 'TestNS',
             metricsCaptureColdStart: $captureColdStart,
         );
 
-        return new EmfMetricsEmitter($config, $this->stream);
+        return new EmfMetricsEmitter($config, 'test-svc', $this->stream);
     }
 
     private function readStream(): string

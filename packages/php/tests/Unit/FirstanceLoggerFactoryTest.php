@@ -14,7 +14,7 @@ final class FirstanceLoggerFactoryTest extends TestCase
 {
     public function testCreateFromConfigReturnsObservability(): void
     {
-        $config = new ConfigDTO(serviceName: 'test-svc', serviceVersion: '1.0.0');
+        $config = new ConfigDTO();
         $obs = FirstanceLoggerFactory::createFromConfig($config);
 
         $this->assertInstanceOf(FirstanceObservability::class, $obs);
@@ -22,20 +22,18 @@ final class FirstanceLoggerFactoryTest extends TestCase
 
     public function testLoggerIsMonologInstance(): void
     {
-        $config = new ConfigDTO(serviceName: 'test-svc');
+        $config = new ConfigDTO();
         $obs = FirstanceLoggerFactory::createFromConfig($config);
 
         $this->assertInstanceOf(Logger::class, $obs->logger);
-        $this->assertSame('test-svc', $obs->logger->getName());
     }
 
     public function testTracerIsConfigured(): void
     {
-        $config = new ConfigDTO(serviceName: 'test-svc', tracerEnabled: true);
+        $config = new ConfigDTO(tracerEnabled: true);
         $obs = FirstanceLoggerFactory::createFromConfig($config);
 
         $this->assertTrue($obs->tracer->isEnabled());
-        $this->assertSame('test-svc', $obs->tracer->getServiceName());
     }
 
     public function testCreateFromConfigFileWorks(): void
@@ -44,6 +42,5 @@ final class FirstanceLoggerFactoryTest extends TestCase
         $obs = FirstanceLoggerFactory::create($configPath);
 
         $this->assertInstanceOf(FirstanceObservability::class, $obs);
-        $this->assertSame('test-service', $obs->logger->getName());
     }
 }

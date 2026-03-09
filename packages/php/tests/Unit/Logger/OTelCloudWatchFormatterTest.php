@@ -15,11 +15,24 @@ final class OTelCloudWatchFormatterTest extends TestCase
 
     protected function setUp(): void
     {
+        putenv('AWS_LAMBDA_FUNCTION_VERSION=$LATEST');
+        putenv('AWS_LAMBDA_FUNCTION_MEMORY_SIZE=512');
+        putenv('AWS_LAMBDA_LOG_STREAM_NAME=2026/03/09/[$LATEST]abc123');
+
         $this->formatter = new OTelCloudWatchFormatter(
             serviceName: 'test-service',
             serviceVersion: '1.0.0',
+            sdkName: 'poc-logger',
+            sdkVersion: '0.2.3',
             region: 'eu-south-1',
         );
+    }
+
+    protected function tearDown(): void
+    {
+        putenv('AWS_LAMBDA_FUNCTION_VERSION');
+        putenv('AWS_LAMBDA_FUNCTION_MEMORY_SIZE');
+        putenv('AWS_LAMBDA_LOG_STREAM_NAME');
     }
 
     public function testProducesOTelCompliantStructure(): void
@@ -33,7 +46,7 @@ final class OTelCloudWatchFormatterTest extends TestCase
         $this->assertSame('test message', $output['Body']);
     }
 
-    public function testIncludesResourceFields(): void
+    public function testIncludesAllResourceFields(): void
     {
         $record = $this->makeRecord('test', Level::Info);
         $output = json_decode($this->formatter->format($record), true);
@@ -41,9 +54,15 @@ final class OTelCloudWatchFormatterTest extends TestCase
         $resource = $output['Resource'];
         $this->assertSame('test-service', $resource['service.name']);
         $this->assertSame('1.0.0', $resource['service.version']);
+        $this->assertSame('poc-logger', $resource['telemetry.sdk.name']);
+        $this->assertSame('0.2.3', $resource['telemetry.sdk.version']);
         $this->assertSame('php', $resource['service.language']);
+        $this->assertSame('$LATEST', $resource['faas.version']);
+        $this->assertSame('512', $resource['faas.memory']);
+        $this->assertSame('2026/03/09/[$LATEST]abc123', $resource['faas.instance']);
         $this->assertSame('aws', $resource['cloud.provider']);
         $this->assertSame('eu-south-1', $resource['cloud.region']);
+        $this->assertSame(PHP_VERSION, $resource['process.runtime.version']);
     }
 
     public function testMapsSeverityLevelsCorrectly(): void
@@ -101,6 +120,28 @@ final class OTelCloudWatchFormatterTest extends TestCase
         $output = json_decode($this->formatter->format($record), true);
 
         $this->assertArrayNotHasKey('TraceId', $output);
+    }
+
+    public function testDefaultsFaasFieldsWhenEnvNotSet(): void
+    {
+        putenv('AWS_LAMBDA_FUNCTION_VERSION');
+        putenv('AWS_LAMBDA_FUNCTION_MEMORY_SIZE');
+        putenv('AWS_LAMBDA_LOG_STREAM_NAME');
+
+        $formatter = new OTelCloudWatchFormatter(
+            serviceName: 'test',
+            serviceVersion: '1.0.0',
+            sdkName: 'poc-logger',
+            sdkVersion: '0.2.3',
+            region: 'eu-south-1',
+        );
+
+        $record = $this->makeRecord('test', Level::Info);
+        $output = json_decode($formatter->format($record), true);
+
+        $this->assertSame('', $output['Resource']['faas.version']);
+        $this->assertSame('', $output['Resource']['faas.memory']);
+        $this->assertSame('', $output['Resource']['faas.instance']);
     }
 
     /**

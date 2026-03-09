@@ -12,8 +12,6 @@ final class ConfigDTOTest extends TestCase
     public function testCreatesWithAllValues(): void
     {
         $dto = new ConfigDTO(
-            serviceName: 'my-service',
-            serviceVersion: '1.0.0',
             logLevel: 'DEBUG',
             logSampleRate: 0.5,
             persistentKeys: ['team' => 'integrations'],
@@ -23,8 +21,6 @@ final class ConfigDTOTest extends TestCase
             metricsCaptureColdStart: true,
         );
 
-        $this->assertSame('my-service', $dto->serviceName);
-        $this->assertSame('1.0.0', $dto->serviceVersion);
         $this->assertSame('DEBUG', $dto->logLevel);
         $this->assertSame(0.5, $dto->logSampleRate);
         $this->assertSame(['team' => 'integrations'], $dto->persistentKeys);
@@ -36,10 +32,8 @@ final class ConfigDTOTest extends TestCase
 
     public function testCreatesWithDefaults(): void
     {
-        $dto = new ConfigDTO(serviceName: 'minimal');
+        $dto = new ConfigDTO();
 
-        $this->assertSame('minimal', $dto->serviceName);
-        $this->assertSame('0.0.0', $dto->serviceVersion);
         $this->assertSame('INFO', $dto->logLevel);
         $this->assertSame(1.0, $dto->logSampleRate);
         $this->assertSame([], $dto->persistentKeys);
