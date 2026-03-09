@@ -1,7 +1,7 @@
 {
   "name": "firstance/poc-logger",
   "description": "poc-logger — Observability unificata per AWS Lambda PHP con output OTel",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "type": "library",
   "license": "MIT",
   "minimum-stability": "stable",
