@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace Firstance\LambdaObs\Config;
 
-use Composer\InstalledVersions;
 use Symfony\Component\Yaml\Yaml;
 
 final class ConfigLoader
 {
     private const ENV_MAPPINGS = [
-        'POWERTOOLS_SERVICE_NAME' => ['service', 'name'],
         'POWERTOOLS_LOG_LEVEL' => ['logger', 'level'],
         'Firstance_OBS_SAMPLE_RATE' => ['logger', 'sampleRate'],
         'Firstance_OBS_METRICS_NAMESPACE' => ['metrics', 'namespace'],
@@ -21,61 +19,21 @@ final class ConfigLoader
     public static function load(string $configPath): ConfigDTO
     {
         $raw = self::readYaml($configPath);
-        self::ensureServiceName($raw);
         $merged = self::applyEnvOverrides($raw);
 
         return ConfigSchema::validate($merged);
     }
 
-    private static function findProjectName(): string
-    {
-        $root = InstalledVersions::getRootPackage();
-        $name = $root['name'];
-        if ($name !== '' && $name !== '__root__') {
-            $parts = explode('/', $name);
-            return end($parts) ?: 'unknown-service';
-        }
-
-        return 'unknown-service';
-    }
-
-    private static function findProjectVersion(): string
-    {
-        $root = InstalledVersions::getRootPackage();
-        $version = $root['pretty_version'];
-        if ($version !== '' && !str_starts_with($version, 'dev-') && !str_contains($version, 'no-version-set')) {
-            return $version;
-        }
-
-        return '0.0.0';
-    }
-
     /**
      * @return array<string, mixed>
      */
-    private static function getDefaultConfig(string $serviceName): array
+    private static function getDefaultConfig(): array
     {
         return [
-            'service' => ['name' => $serviceName, 'version' => self::findProjectVersion()],
             'logger' => ['level' => 'INFO', 'sampleRate' => 1.0, 'persistentKeys' => []],
             'tracer' => ['enabled' => true, 'captureHTTPS' => true],
             'metrics' => ['namespace' => 'Default', 'captureColdStart' => true],
         ];
-    }
-
-    /**
-     * @param array<string, mixed> $raw
-     */
-    private static function ensureServiceName(array &$raw): void
-    {
-        $service = $raw['service'] ?? null;
-        $hasName = is_array($service) && isset($service['name']) && is_string($service['name']) && $service['name'] !== '';
-        if (!$hasName) {
-            if (!is_array($raw['service'] ?? null)) {
-                $raw['service'] = [];
-            }
-            $raw['service']['name'] = self::findProjectName();
-        }
     }
 
     /**
@@ -84,8 +42,7 @@ final class ConfigLoader
     private static function readYaml(string $filePath): array
     {
         if (!file_exists($filePath)) {
-            $serviceName = self::findProjectName();
-            $defaultConfig = self::getDefaultConfig($serviceName);
+            $defaultConfig = self::getDefaultConfig();
             try {
                 $yamlContent = Yaml::dump($defaultConfig, 4, 2);
                 $written = @file_put_contents($filePath, $yamlContent);

@@ -13,18 +13,6 @@ final class ConfigSchema
      */
     public static function validate(array $raw): ConfigDTO
     {
-        $service = self::arrayGet($raw, 'service', []);
-        if (!is_array($service)) {
-            throw new \InvalidArgumentException('service must be an object');
-        }
-
-        $serviceName = self::arrayGet($service, 'name', null);
-        if (!is_string($serviceName) || $serviceName === '') {
-            throw new \InvalidArgumentException('service.name is required and must be a non-empty string');
-        }
-
-        $serviceVersion = self::stringOrDefault($service, 'version', '0.0.0');
-
         $logger = is_array(self::arrayGet($raw, 'logger', [])) ? self::arrayGet($raw, 'logger', []) : [];
         $logLevel = self::stringOrDefault($logger, 'level', 'INFO');
         if (!in_array($logLevel, self::VALID_LOG_LEVELS, true)) {
@@ -52,8 +40,6 @@ final class ConfigSchema
         $metricsCaptureColdStart = self::boolOrDefault($metrics, 'captureColdStart', true);
 
         return new ConfigDTO(
-            serviceName: $serviceName,
-            serviceVersion: $serviceVersion,
             logLevel: $logLevel,
             logSampleRate: $sampleRate,
             persistentKeys: $persistentKeys,
