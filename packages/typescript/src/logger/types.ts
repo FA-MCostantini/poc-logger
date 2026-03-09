@@ -10,10 +10,16 @@ export type SeverityText = keyof typeof SEVERITY_MAP;
 export interface OTelResource {
   readonly 'service.name': string;
   readonly 'service.version': string;
+  readonly 'telemetry.sdk.name': string;
+  readonly 'telemetry.sdk.version': string;
   readonly 'service.language': 'typescript';
   readonly 'faas.name': string;
+  readonly 'faas.version': string;
+  readonly 'faas.memory': string;
+  readonly 'faas.instance': string;
   readonly 'cloud.provider': 'aws';
   readonly 'cloud.region': string;
+  readonly 'process.runtime.version': string;
 }
 
 export interface OTelLogRecord {
