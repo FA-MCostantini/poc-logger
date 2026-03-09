@@ -33,11 +33,9 @@ Oppure aggiungi manualmente al tuo `package.json`:
 
 ### 2. Crea `config.yaml`
 
-```yaml
-service:
-  name: "my-lambda"
-  version: "1.0.0"
+> `service.name` e `service.version` vengono auto-scoperti da `package.json` / `composer.json` — non servono nel config.
 
+```yaml
 logger:
   level: "INFO"
   sampleRate: 0.1
@@ -118,33 +116,41 @@ Entrambe le implementazioni producono la stessa struttura JSON su stdout, consum
 
 ```json
 {
-  "timestamp": "2026-03-06T10:00:00.000Z",
-  "level": "INFO",
-  "message": "Processing event",
-  "service": "my-lambda",
-  "version": "1.0.0",
-  "cold_start": true,
-  "xray_trace_id": "1-xxxxxxxx-xxxxxxxxxxxxxxxxxxxx",
-  "eventType": "S3ObjectCreated",
-  "resource": {
+  "Timestamp": "2026-03-06T10:00:00.000Z",
+  "SeverityText": "INFO",
+  "SeverityNumber": 9,
+  "Body": "Processing event",
+  "Resource": {
     "service.name": "my-lambda",
     "service.version": "1.0.0",
-    "cloud.provider": "aws",
+    "telemetry.sdk.name": "poc-logger",
+    "telemetry.sdk.version": "0.3.0",
+    "service.language": "typescript",
     "faas.name": "my-lambda",
-    "faas.version": "$LATEST"
+    "faas.version": "$LATEST",
+    "faas.memory": "512",
+    "faas.instance": "2026/03/10/[$LATEST]abc123",
+    "cloud.provider": "aws",
+    "cloud.region": "eu-south-1",
+    "process.runtime.version": "22.0.0"
   },
-  "telemetry.sdk": {
-    "language": "nodejs",
-    "name": "aws-lambda-powertools"
-  }
+  "Attributes": {
+    "cold_start": true,
+    "aws_request_id": "req-123",
+    "eventType": "S3ObjectCreated"
+  },
+  "TraceId": "1-xxxxxxxx-xxxxxxxxxxxxxxxxxxxx"
 }
 ```
+
+> I campi `service.name` e `service.version` vengono auto-scoperti da `package.json` (TS) o `composer.json` (PHP).
+> I campi `telemetry.sdk.*`, `faas.*`, `process.runtime.version` sono popolati automaticamente dall'ambiente Lambda.
 
 Query CloudWatch Logs Insights di esempio:
 
 ```
-fields @timestamp, message, level, service, cold_start
-| filter level = "ERROR"
+fields @timestamp, Body, SeverityText, Resource.service.name, Attributes.cold_start
+| filter SeverityText = "ERROR"
 | sort @timestamp desc
 | limit 20
 ```
@@ -156,7 +162,6 @@ fields @timestamp, message, level, service, cold_start
 | Variabile d'ambiente        | Campo config YAML         | Default  |
 |-----------------------------|---------------------------|----------|
 | `POWERTOOLS_LOG_LEVEL`      | `logger.level`            | `INFO`   |
-| `POWERTOOLS_SERVICE_NAME`   | `service.name`            | —        |
 | `Firstance_OBS_SAMPLE_RATE`      | `logger.sampleRate`       | `0.1`    |
 | `Firstance_OBS_METRICS_NAMESPACE`| `metrics.namespace`       | —        |
 

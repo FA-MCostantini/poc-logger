@@ -108,7 +108,6 @@ Globals:
     Environment:
       Variables:
         POWERTOOLS_LOG_LEVEL: INFO
-        POWERTOOLS_SERVICE_NAME: !Ref ServiceName
         Firstance_OBS_METRICS_NAMESPACE: FirstanceFileDelivery
         Firstance_OBS_SAMPLE_RATE: "0.1"
 ```

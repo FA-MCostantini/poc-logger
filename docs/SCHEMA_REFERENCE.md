@@ -14,12 +14,7 @@ Vedere anche: [GLOSSARIO.md](GLOSSARIO.md) | [QUERY_REFERENCE.md](QUERY_REFERENC
 File di configurazione condiviso tra TS e PHP. Schema JSON completo:
 `shared/schemas/config-schema.json`. File di esempio: `shared/config.example.yaml`.
 
-### Sezione `service` (obbligatoria)
-
-| Campo | Tipo | Default | Descrizione |
-|---|---|---|---|
-| `service.name` | `string` (min 1) | — | Nome del servizio. Usato in `Resource['service.name']` e come dimensione EMF. |
-| `service.version` | `string` | `"0.0.0"` | Versione semver. Usato in `Resource['service.version']`. |
+> **Nota:** `service.name` e `service.version` sono auto-scoperti da `package.json` (TS) o `composer.json` (PHP) e non richiedono configurazione YAML.
 
 ### Sezione `logger` (opzionale)
 
@@ -46,9 +41,7 @@ File di configurazione condiviso tra TS e PHP. Schema JSON completo:
 ### Esempio completo
 
 ```yaml
-service:
-  name: "firstance-file-delivery"
-  version: "1.0.0"
+# service.name e service.version auto-scoperti da package.json / composer.json
 
 logger:
   level: "INFO"
@@ -75,7 +68,6 @@ L'override avviene dopo il parsing YAML e prima della validazione schema.
 
 | Variabile | Campo YAML | Tipo | Esempio |
 |---|---|---|---|
-| `POWERTOOLS_SERVICE_NAME` | `service.name` | `string` | `"firstance-payment-gateway"` |
 | `POWERTOOLS_LOG_LEVEL` | `logger.level` | `DEBUG\|INFO\|WARN\|ERROR` | `"DEBUG"` |
 | `Firstance_OBS_SAMPLE_RATE` | `logger.sampleRate` | `float` (stringa → float) | `"0.05"` |
 | `Firstance_OBS_METRICS_NAMESPACE` | `metrics.namespace` | `string` | `"FirstancePayments"` |
@@ -103,10 +95,16 @@ produce un JSON single-line con questa struttura:
   "Resource": {
     "service.name": "firstance-file-delivery",
     "service.version": "1.0.0",
+    "telemetry.sdk.name": "poc-logger",
+    "telemetry.sdk.version": "0.3.0",
     "service.language": "typescript",
     "faas.name": "firstance-file-delivery-prod",
+    "faas.version": "$LATEST",
+    "faas.memory": "512",
+    "faas.instance": "2026/03/10/[$LATEST]abc123",
     "cloud.provider": "aws",
-    "cloud.region": "eu-west-1"
+    "cloud.region": "eu-west-1",
+    "process.runtime.version": "22.0.0"
   },
   "Attributes": {
     "cold_start": false,
