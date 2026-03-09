@@ -3,25 +3,7 @@
   "$id": "https://firstance.it/poc-logger/config-schema.json",
   "title": "poc-logger Configuration",
   "type": "object",
-  "required": ["service"],
   "properties": {
-    "service": {
-      "type": "object",
-      "required": ["name"],
-      "properties": {
-        "name": {
-          "type": "string",
-          "minLength": 1,
-          "description": "Service name for OTel Resource"
-        },
-        "version": {
-          "type": "string",
-          "default": "0.0.0",
-          "description": "Service version (semver)"
-        }
-      },
-      "additionalProperties": false
-    },
     "logger": {
       "type": "object",
       "properties": {

@@ -1,15 +1,10 @@
-# Firstance Lambda Obs — Configurazione condivisa
-# Identico per PHP e TypeScript
+# poc-logger Configuration
+# service.name and service.version are auto-discovered from package.json / composer.json
 #
 # Env overrides (12-factor):
 #   POWERTOOLS_LOG_LEVEL  -> logger.level
-#   POWERTOOLS_SERVICE_NAME -> service.name
 #   Firstance_OBS_SAMPLE_RATE -> logger.sampleRate
 #   Firstance_OBS_METRICS_NAMESPACE -> metrics.namespace
-
-service:
-  name: "firstance-file-delivery"
-  version: "1.0.0"
 
 logger:
   level: "INFO"
