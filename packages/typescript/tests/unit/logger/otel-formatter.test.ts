@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { OTelLogFormatter } from '../../../src/logger/otel-formatter.js';
 import type { UnformattedAttributes } from '@aws-lambda-powertools/logger/types';
 
@@ -26,7 +26,25 @@ function makeAttributes(overrides: Partial<UnformattedAttributes> = {}): Unforma
 }
 
 describe('OTelLogFormatter', () => {
-  const formatter = new OTelLogFormatter({ serviceVersion: '1.0.0' });
+  const originalEnv = { ...process.env };
+
+  beforeEach(() => {
+    process.env = { ...originalEnv };
+    process.env['AWS_LAMBDA_FUNCTION_VERSION'] = '$LATEST';
+    process.env['AWS_LAMBDA_FUNCTION_MEMORY_SIZE'] = '512';
+    process.env['AWS_LAMBDA_LOG_STREAM_NAME'] = '2026/03/09/[$LATEST]abc123';
+  });
+
+  afterEach(() => {
+    process.env = originalEnv;
+  });
+
+  const formatter = new OTelLogFormatter({
+    serviceName: 'test-service',
+    serviceVersion: '1.0.0',
+    sdkName: 'poc-logger',
+    sdkVersion: '0.2.3',
+  });
 
   it('should produce OTel-compliant log record structure', () => {
     const attrs = makeAttributes();
@@ -38,17 +56,23 @@ describe('OTelLogFormatter', () => {
     expect(output.Body).toBe('test message');
   });
 
-  it('should include Resource fields', () => {
+  it('should include all Resource fields', () => {
     const attrs = makeAttributes();
     const logItem = formatter.formatAttributes(attrs, {});
     const output = logItem.getAttributes();
     const resource = output.Resource as Record<string, unknown>;
     expect(resource['service.name']).toBe('test-service');
     expect(resource['service.version']).toBe('1.0.0');
+    expect(resource['telemetry.sdk.name']).toBe('poc-logger');
+    expect(resource['telemetry.sdk.version']).toBe('0.2.3');
     expect(resource['service.language']).toBe('typescript');
     expect(resource['faas.name']).toBe('my-lambda');
+    expect(resource['faas.version']).toBe('$LATEST');
+    expect(resource['faas.memory']).toBe('512');
+    expect(resource['faas.instance']).toBe('2026/03/09/[$LATEST]abc123');
     expect(resource['cloud.provider']).toBe('aws');
     expect(resource['cloud.region']).toBe('eu-south-1');
+    expect(resource['process.runtime.version']).toMatch(/^\d+\.\d+\.\d+/);
   });
 
   it('should map severity levels correctly', () => {
@@ -93,5 +117,24 @@ describe('OTelLogFormatter', () => {
     const output = logItem.getAttributes();
     const resource = output.Resource as Record<string, unknown>;
     expect(resource['faas.name']).toBe('');
+  });
+
+  it('should default faas env fields to empty string when not set', () => {
+    delete process.env['AWS_LAMBDA_FUNCTION_VERSION'];
+    delete process.env['AWS_LAMBDA_FUNCTION_MEMORY_SIZE'];
+    delete process.env['AWS_LAMBDA_LOG_STREAM_NAME'];
+    const f = new OTelLogFormatter({
+      serviceName: 'test',
+      serviceVersion: '1.0.0',
+      sdkName: 'poc-logger',
+      sdkVersion: '0.2.3',
+    });
+    const attrs = makeAttributes();
+    const logItem = f.formatAttributes(attrs, {});
+    const output = logItem.getAttributes();
+    const resource = output.Resource as Record<string, unknown>;
+    expect(resource['faas.version']).toBe('');
+    expect(resource['faas.memory']).toBe('');
+    expect(resource['faas.instance']).toBe('');
   });
 });
