@@ -1,4 +1,7 @@
 import { build } from 'esbuild';
+import { readFileSync, writeFileSync } from 'node:fs';
+
+const pkg = JSON.parse(readFileSync('package.json', 'utf-8'));
 
 await build({
   entryPoints: ['packages/typescript/src/index.ts'],
@@ -11,10 +14,12 @@ await build({
   external: ['aws-sdk', '@aws-sdk/*'],
   // Generate sourcemap
   sourcemap: true,
+  define: {
+    '__SDK_VERSION__': JSON.stringify(pkg.version),
+  },
 });
 
 // Write package.json for CJS context
-import { writeFileSync } from 'node:fs';
 writeFileSync('packages/typescript/dist/cjs/package.json', '{"type":"commonjs"}\n');
 
 console.log('CJS build complete');
