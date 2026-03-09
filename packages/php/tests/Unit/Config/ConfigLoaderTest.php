@@ -66,8 +66,8 @@ final class ConfigLoaderTest extends TestCase
 
         try {
             $config = ConfigLoader::load($tempPath);
-            $this->assertSame('lambda-obs', $config->serviceName);
-            $this->assertSame('0.0.0', $config->serviceVersion);
+            $this->assertSame('poc-logger', $config->serviceName);
+            $this->assertSame('0.2.1', $config->serviceVersion);
             $this->assertSame('INFO', $config->logLevel);
             $this->assertSame(1.0, $config->logSampleRate);
             $this->assertTrue($config->tracerEnabled);
@@ -83,7 +83,7 @@ final class ConfigLoaderTest extends TestCase
     public function testUsesProjectNameWhenServiceNameMissing(): void
     {
         $config = ConfigLoader::load($this->fixturesPath . '/config.no-service-name.yaml');
-        $this->assertSame('lambda-obs', $config->serviceName);
+        $this->assertSame('poc-logger', $config->serviceName);
     }
 
     public function testWarnsWhenDefaultConfigCannotBeWritten(): void
@@ -100,7 +100,7 @@ final class ConfigLoaderTest extends TestCase
             restore_error_handler();
         }
 
-        $this->assertSame('lambda-obs', $config->serviceName);
+        $this->assertSame('poc-logger', $config->serviceName);
         $this->assertSame(
             '[firstance-obs] Cannot create default config at /nonexistent-dir/impossible/config.yaml, using in-memory defaults',
             $warningMessage,

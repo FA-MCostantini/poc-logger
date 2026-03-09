@@ -1,4 +1,4 @@
-# firstance-lambda-obs
+# poc-logger
 
 Libreria di observability unificata per AWS Lambda, con output OTel JSON compatibile con CloudWatch Logs Insights.
 Disponibile in **TypeScript** (npm) e **PHP** (Composer). Entrambe le implementazioni producono strutture JSON identiche.
@@ -12,7 +12,7 @@ Disponibile in **TypeScript** (npm) e **PHP** (Composer). Entrambe le implementa
 ### 1. Installa come dipendenza
 
 ```bash
-npm install git+https://github.com/FA-MCostantini/poc-logger.git#v0.2.0
+npm install git+https://github.com/FA-MCostantini/poc-logger.git#v0.2.1
 ```
 
 Oppure aggiungi manualmente al tuo `package.json`:
@@ -20,12 +20,12 @@ Oppure aggiungi manualmente al tuo `package.json`:
 ```json
 {
   "dependencies": {
-    "poc-logger": "github:FA-MCostantini/poc-logger#v0.2.0"
+    "poc-logger": "github:FA-MCostantini/poc-logger#v0.2.1"
   }
 }
 ```
 
-> Le versioni seguono git tag semver (es. `v0.2.0`). Consulta i [rilasci](https://github.com/FA-MCostantini/poc-logger/tags) per la versione più recente.
+> Le versioni seguono git tag semver (es. `v0.2.1`). Consulta i [rilasci](https://github.com/FA-MCostantini/poc-logger/tags) per la versione più recente.
 
 > La compilazione TypeScript avviene automaticamente durante l'installazione tramite lo script `prepare`.
 
@@ -86,7 +86,7 @@ Aggiungi al tuo `composer.json`:
     }
   ],
   "require": {
-    "firstance/lambda-obs": "^0.2.0"
+    "firstance/poc-logger": "^0.2.1"
   }
 }
 ```
@@ -95,7 +95,7 @@ Aggiungi al tuo `composer.json`:
 composer update
 ```
 
-> Composer risolve le versioni direttamente dai git tag (es. `v0.2.0` → `0.2.0`). Consulta i [rilasci](https://github.com/FA-MCostantini/poc-logger/tags) per la versione più recente.
+> Composer risolve le versioni direttamente dai git tag (es. `v0.2.1` → `0.2.0`). Consulta i [rilasci](https://github.com/FA-MCostantini/poc-logger/tags) per la versione più recente.
 
 ### 2. Crea `config.yaml`
 
@@ -168,19 +168,21 @@ Le variabili d'ambiente hanno precedenza sui valori nel file `config.yaml` (12-f
 
 ```
 poc-logger/
-├── package.json              # Entry point npm (installa da git)
-├── composer.json             # Entry point Composer (installa da git)
-├── architecture.mermaid      # Diagramma architetturale
+├── package.json              # Dipendenze npm, script build/test
+├── composer.json             # Dipendenze Composer, autoload PSR-4
+├── tsconfig.json             # Configurazione TypeScript base
+├── tsconfig.build.json       # Build ESM
+├── tsconfig.cjs.json         # Build CJS
+├── vitest.config.ts          # Configurazione Vitest
+├── phpunit.xml               # Configurazione PHPUnit
+├── phpstan.neon              # Configurazione PHPStan
 ├── packages/
 │   ├── typescript/           # Sorgenti TypeScript
 │   │   ├── src/
-│   │   ├── tests/
-│   │   ├── package.json      # Dipendenze e build interne
-│   │   └── tsconfig.json
+│   │   └── tests/
 │   └── php/                  # Sorgenti PHP
 │       ├── src/
-│       ├── tests/
-│       └── composer.json     # Dipendenze interne
+│       └── tests/
 ├── shared/
 │   ├── schemas/
 │   │   └── config-schema.json
@@ -198,8 +200,7 @@ Non sono richieste installazioni locali di Node o PHP. Tutti i test girano via D
 ### TypeScript
 
 ```bash
-docker build -t firstance-obs-ts packages/typescript \
-  -f packages/typescript/tests/Dockerfile
+docker build -t firstance-obs-ts -f packages/typescript/tests/Dockerfile .
 
 docker run --rm firstance-obs-ts
 ```
@@ -207,8 +208,7 @@ docker run --rm firstance-obs-ts
 ### PHP
 
 ```bash
-docker build -t firstance-obs-php packages/php \
-  -f packages/php/tests/Dockerfile
+docker build -t firstance-obs-php -f packages/php/tests/Dockerfile .
 
 docker run --rm firstance-obs-php
 ```

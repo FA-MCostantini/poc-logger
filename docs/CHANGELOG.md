@@ -1,6 +1,6 @@
 # Changelog
 
-Tutte le modifiche rilevanti al progetto `firstance-lambda-obs` sono documentate in questo file.
+Tutte le modifiche rilevanti al progetto `poc-logger` sono documentate in questo file.
 
 Formato basato su [Keep a Changelog](https://keepachangelog.com/it/1.0.0/).
 
@@ -11,8 +11,8 @@ Formato basato su [Keep a Changelog](https://keepachangelog.com/it/1.0.0/).
 ### Fase 0 — Setup monorepo
 
 - Creata struttura directory del monorepo (`packages/typescript`, `packages/php`, `shared/`, `tests/`, `docs/`)
-- Aggiunto `package.json` per il pacchetto TypeScript (`@firstance/lambda-obs` v1.0.0)
-- Aggiunto `composer.json` per il pacchetto PHP (`firstance/lambda-obs`)
+- Aggiunto `package.json` per il pacchetto TypeScript (`poc-logger` v1.0.0)
+- Aggiunto `composer.json` per il pacchetto PHP (`firstance/poc-logger`)
 - Configurato `tsconfig.json` e `tsconfig.build.json` con target ES2022
 - Configurato `vitest.config.ts` per test unitari TypeScript
 - Configurato `phpunit.xml` con test suite Unit e Integration

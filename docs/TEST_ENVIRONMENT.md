@@ -1,6 +1,6 @@
-# Ambiente di Test — Firstance Lambda Obs
+# Ambiente di Test — poc-logger
 
-**Versione**: 1.0.0 | **Data**: 2026-03-06
+**Versione**: 0.2.1 | **Data**: 2026-03-09
 
 Tutti i test vengono eseguiti in container Docker. Non e' richiesta alcuna installazione
 locale di Node.js, npm, PHP o Composer.
@@ -30,12 +30,12 @@ Vedere anche: [ACCEPTANCE_CRITERIA.md](ACCEPTANCE_CRITERIA.md)
 docker build \
   -t firstance-ts-test \
   -f packages/typescript/tests/Dockerfile \
-  packages/typescript
+  .
 ```
 
 L'immagine usa `node:20-alpine`. Il Dockerfile:
 1. Copia `package.json` e installa le dipendenze con `npm install`
-2. Copia `tsconfig.json`, `vitest.config.ts`, `src/` e `tests/`
+2. Copia `tsconfig.json`, `tsconfig.build.json`, `tsconfig.cjs.json`, `vitest.config.ts`, `packages/typescript/src/` e `packages/typescript/tests/`
 3. Il CMD di default esegue `npx vitest run --reporter=verbose`
 
 ### Esecuzione test
@@ -50,7 +50,7 @@ docker run --rm firstance-ts-test
 docker run --rm firstance-ts-test npx vitest run --coverage
 ```
 
-Soglie di coverage configurate in `packages/typescript/vitest.config.ts`:
+Soglie di coverage configurate in `vitest.config.ts`:
 - **statements**: >= 90%
 - **branches**: >= 85%
 
@@ -58,8 +58,8 @@ Soglie di coverage configurate in `packages/typescript/vitest.config.ts`:
 
 ```bash
 docker run --rm -it \
-  -v "$(pwd)/packages/typescript/src:/app/src" \
-  -v "$(pwd)/packages/typescript/tests:/app/tests" \
+  -v "$(pwd)/packages/typescript/src:/app/packages/typescript/src" \
+  -v "$(pwd)/packages/typescript/tests:/app/packages/typescript/tests" \
   firstance-ts-test npx vitest --reporter=verbose
 ```
 
@@ -73,13 +73,13 @@ docker run --rm -it \
 docker build \
   -t firstance-php-test \
   -f packages/php/tests/Dockerfile \
-  packages/php
+  .
 ```
 
 L'immagine usa `php:8.2-cli-alpine`. Il Dockerfile:
 1. Installa `unzip`, `curl` e Composer
 2. Copia `composer.json` e installa le dipendenze con `composer install --no-interaction`
-3. Copia `phpunit.xml`, `phpstan.neon`, `src/` e `tests/`
+3. Copia `phpunit.xml`, `phpstan.neon`, `packages/php/src/` e `packages/php/tests/`
 4. Il CMD di default esegue `vendor/bin/phpunit --testdox`
 
 ### Esecuzione test
@@ -92,14 +92,14 @@ docker run --rm firstance-php-test
 
 ```bash
 docker run --rm firstance-php-test \
-  vendor/bin/phpstan analyse src \
+  vendor/bin/phpstan analyse packages/php/src \
   --level=8 \
   --no-progress
 ```
 
 Il file `phpstan.neon` configura:
 - `level: 8` (massimo)
-- `paths: [src]`
+- `paths: [packages/php/src]`
 - `tmpDir: .phpstan.cache`
 
 ### Esecuzione con output XML (CI/CD)
@@ -158,15 +158,15 @@ Sequenza raccomandata per un pipeline CI:
 
 ```bash
 # 1. Build
-docker build -t firstance-ts-test -f packages/typescript/tests/Dockerfile packages/typescript
-docker build -t firstance-php-test -f packages/php/tests/Dockerfile packages/php
+docker build -t firstance-ts-test -f packages/typescript/tests/Dockerfile .
+docker build -t firstance-php-test -f packages/php/tests/Dockerfile .
 
 # 2. Unit tests
 docker run --rm firstance-ts-test
 docker run --rm firstance-php-test
 
 # 3. Static analysis (PHP)
-docker run --rm firstance-php-test vendor/bin/phpstan analyse src --level=8 --no-progress
+docker run --rm firstance-php-test vendor/bin/phpstan analyse packages/php/src --level=8 --no-progress
 
 # 4. Coverage (TS)
 docker run --rm firstance-ts-test npx vitest run --coverage
@@ -186,14 +186,13 @@ packages/typescript/tests/
 ├── Dockerfile
 ├── fixtures/          # Dati di input per i test (YAML, JSON)
 ├── helpers/           # Utility condivise tra i test
-├── unit/
-│   ├── config/        # Test ConfigLoader e schema
-│   ├── logger/        # Test OTelLogFormatter
-│   ├── metrics/       # Test MetricsFactory
-│   ├── middleware/    # Test MiddlewareChain
-│   └── tracer/        # Test TracerFactory
-├── integration/       # Test di integrazione (future)
-└── factory.test.ts    # Test entry point createFirstanceLogger
+└── unit/
+    ├── config/        # Test ConfigLoader e schema
+    ├── logger/        # Test OTelLogFormatter
+    ├── metrics/       # Test MetricsFactory
+    ├── middleware/    # Test MiddlewareChain
+    ├── tracer/        # Test TracerFactory
+    └── factory.test.ts    # Test entry point createFirstanceLogger
 
 packages/php/tests/
 ├── Dockerfile
@@ -203,12 +202,29 @@ packages/php/tests/
 │   ├── Config/        # Test ConfigLoader e ConfigSchema
 │   ├── Logger/        # Test OTelCloudWatchFormatter e Severity
 │   ├── Metrics/       # Test EmfMetricsEmitter
-│   └── Tracer/        # Test XRayTracerFactory
-├── Integration/       # Test di integrazione (future)
-└── FirstanceLoggerFactoryTest.php
+│   ├── Tracer/        # Test XRayTracerFactory
+│   └── FirstanceLoggerFactoryTest.php
+└── Integration/       # Test di integrazione (future)
 
 tests/                 # Test cross-language (root del monorepo)
 ├── cross-language-test.sh
 ├── emit-log-ts.ts
 └── emit-log-php.php
 ```
+
+---
+
+## 6. File di configurazione (root)
+
+Tutti i file di configurazione risiedono nella root del monorepo:
+
+| File | Scopo |
+|------|-------|
+| `package.json` | Dipendenze npm, script build/test |
+| `composer.json` | Dipendenze Composer, autoload PSR-4 |
+| `tsconfig.json` | Configurazione TypeScript base |
+| `tsconfig.build.json` | Build ESM (`packages/typescript/dist/esm/`) |
+| `tsconfig.cjs.json` | Build CJS (`packages/typescript/dist/cjs/`) |
+| `vitest.config.ts` | Configurazione Vitest |
+| `phpunit.xml` | Configurazione PHPUnit |
+| `phpstan.neon` | Configurazione PHPStan |

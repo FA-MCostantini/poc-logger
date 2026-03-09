@@ -1,5 +1,5 @@
 import { Logger } from '@aws-lambda-powertools/logger';
-import { OTelLogFormatter } from './src/logger/otel-formatter.js';
+import { OTelLogFormatter } from './packages/typescript/src/logger/otel-formatter.js';
 
 const formatter = new OTelLogFormatter({ serviceVersion: '1.0.0' });
 

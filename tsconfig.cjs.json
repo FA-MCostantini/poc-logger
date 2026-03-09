@@ -3,10 +3,10 @@
   "compilerOptions": {
     "module": "CommonJS",
     "moduleResolution": "Node",
-    "outDir": "./dist/cjs",
+    "outDir": "./packages/typescript/dist/cjs",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true
   },
-  "exclude": ["node_modules", "dist", "tests", "**/*.test.ts"]
+  "exclude": ["node_modules", "packages/typescript/dist", "packages/typescript/tests", "**/*.test.ts"]
 }

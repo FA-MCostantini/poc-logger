@@ -47,7 +47,7 @@ describe('loadConfig', () => {
 
     try {
       const config = loadConfig({ configPath: tempPath });
-      expect(config.service.name).toBe('lambda-obs');
+      expect(config.service.name).toBe('poc-logger');
       expect(config.service.version).toBe('0.0.0');
       expect(config.logger.level).toBe('INFO');
       expect(config.logger.sampleRate).toBe(1.0);
@@ -61,14 +61,14 @@ describe('loadConfig', () => {
 
   it('should use service name from package.json when YAML has no service.name', () => {
     const config = loadConfig({ configPath: path.join(FIXTURES, 'config.no-service-name.yaml') });
-    expect(config.service.name).toBe('lambda-obs');
+    expect(config.service.name).toBe('poc-logger');
   });
 
   it('should warn but not throw when default config cannot be written', () => {
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     try {
       const config = loadConfig({ configPath: '/nonexistent-dir/impossible-path/config.yaml' });
-      expect(config.service.name).toBe('lambda-obs');
+      expect(config.service.name).toBe('poc-logger');
       expect(warnSpy).toHaveBeenCalledWith(
         expect.stringContaining('Cannot create default config'),
       );

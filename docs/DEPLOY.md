@@ -1,20 +1,17 @@
 # DEPLOY — Guida al Deploy e Utilizzo
 
-> **Nota**: `firstance-lambda-obs` e' un Proof of Concept per uso interno Firstance.
+> **Nota**: `poc-logger` e' un Proof of Concept per uso interno Firstance.
 > Non viene pubblicato su npm o Packagist. Questa guida descrive come
-> integrarlo localmente nei progetti Lambda.
+> integrarlo nei progetti Lambda.
 
 ---
 
-## 1. Utilizzo come dipendenza locale
+## 1. Utilizzo come dipendenza
 
-### TypeScript — npm link / path install
-
-**Opzione A: Installazione diretta dal percorso (consigliata)**
+### TypeScript — installazione da GitHub
 
 ```bash
-# Dalla root del progetto Lambda
-npm install /percorso/assoluto/firstance-lambda-obs/packages/typescript
+npm install github:FA-MCostantini/poc-logger#v0.2.1
 ```
 
 Il `package.json` del progetto risultante:
@@ -22,36 +19,25 @@ Il `package.json` del progetto risultante:
 ```json
 {
   "dependencies": {
-    "@firstance/lambda-obs": "file:/percorso/assoluto/firstance-lambda-obs/packages/typescript"
+    "poc-logger": "github:FA-MCostantini/poc-logger#v0.2.1"
   }
 }
 ```
 
-**Opzione B: npm link (per sviluppo attivo)**
+La compilazione TypeScript avviene automaticamente durante l'installazione tramite lo script `prepare`.
+
+**Build manuale (sviluppo locale):**
 
 ```bash
-# Nel pacchetto firstance-lambda-obs
-cd /percorso/assoluto/firstance-lambda-obs/packages/typescript
-npm link
-
-# Nel progetto Lambda
-cd /percorso/del/progetto-lambda
-npm link @firstance/lambda-obs
-```
-
-**Build richiesta prima dell'uso:**
-
-```bash
-cd /percorso/assoluto/firstance-lambda-obs/packages/typescript
 npm install
 npm run build
 ```
 
-L'output compilato si trova in `packages/typescript/dist/`.
+L'output compilato si trova in `packages/typescript/dist/` (ESM + CJS).
 
 ---
 
-### PHP — Composer path repository
+### PHP — Composer con versionamento semver
 
 Aggiungi al `composer.json` del progetto Lambda:
 
@@ -59,32 +45,28 @@ Aggiungi al `composer.json` del progetto Lambda:
 {
   "repositories": [
     {
-      "type": "path",
-      "url": "/percorso/assoluto/firstance-lambda-obs/packages/php",
-      "options": {
-        "symlink": true
-      }
+      "type": "vcs",
+      "url": "https://github.com/FA-MCostantini/poc-logger.git"
     }
   ],
   "require": {
-    "firstance/lambda-obs": "*"
+    "firstance/poc-logger": "^0.2.1"
   }
 }
 ```
 
 ```bash
-composer install
+composer update
 ```
 
-Con `"symlink": true`, le modifiche al sorgente sono immediatamente visibili
-senza dover rieseguire `composer install`.
+Composer risolve le versioni direttamente dai git tag (es. `v0.2.1` -> `0.2.1`).
 
 ---
 
 ## 2. Testing con Docker
 
 Non sono richieste installazioni locali di Node.js o PHP.
-Ogni pacchetto include un `Dockerfile` dedicato per i test.
+I Dockerfiles usano il contesto dalla root del monorepo.
 
 ### TypeScript — build e test
 
@@ -93,7 +75,7 @@ Ogni pacchetto include un `Dockerfile` dedicato per i test.
 docker build \
   -t firstance-obs-ts \
   -f packages/typescript/tests/Dockerfile \
-  packages/typescript
+  .
 
 docker run --rm firstance-obs-ts
 ```
@@ -106,7 +88,7 @@ Output atteso: tutti i test Vitest superati con reporter verbose.
 docker build \
   -t firstance-obs-php \
   -f packages/php/tests/Dockerfile \
-  packages/php
+  .
 
 docker run --rm firstance-obs-php
 ```
@@ -152,19 +134,18 @@ Per distribuire la libreria come Lambda Layer condiviso tra piu' funzioni:
 
 ```bash
 # 1. Build del pacchetto
-cd packages/typescript
 npm install && npm run build
 
 # 2. Struttura layer
 mkdir -p layer/nodejs/node_modules/@firstance
-cp -r . layer/nodejs/node_modules/@firstance/lambda-obs
+cp -r . layer/nodejs/node_modules/@firstance/poc-logger
 
 # 3. Zip e upload
 cd layer
-zip -r firstance-lambda-obs-layer.zip nodejs/
+zip -r poc-logger-layer.zip nodejs/
 aws lambda publish-layer-version \
-  --layer-name firstance-lambda-obs \
-  --zip-file fileb://firstance-lambda-obs-layer.zip \
+  --layer-name poc-logger \
+  --zip-file fileb://poc-logger-layer.zip \
   --compatible-runtimes nodejs20.x
 ```
 
@@ -172,20 +153,19 @@ aws lambda publish-layer-version \
 
 ```bash
 # 1. Install dipendenze
-cd packages/php
 composer install --no-dev --optimize-autoloader
 
 # 2. Struttura layer
 mkdir -p layer/php/vendor
 cp -r vendor/* layer/php/vendor/
-cp -r src/ layer/php/src/
+cp -r packages/php/src/ layer/php/src/
 
 # 3. Zip e upload
 cd layer
-zip -r firstance-lambda-obs-php-layer.zip php/
+zip -r poc-logger-php-layer.zip php/
 aws lambda publish-layer-version \
-  --layer-name firstance-lambda-obs-php \
-  --zip-file fileb://firstance-lambda-obs-php-layer.zip \
+  --layer-name poc-logger-php \
+  --zip-file fileb://poc-logger-php-layer.zip \
   --compatible-runtimes provided.al2
 ```
 
@@ -199,7 +179,7 @@ aws lambda publish-layer-version \
 Se integrato in un pipeline, lo schema raccomandato e':
 
 ```
-push → lint → test (Docker) → build → package → deploy (staging) → acceptance test → deploy (prod)
+push -> lint -> test (Docker) -> build -> package -> deploy (staging) -> acceptance test -> deploy (prod)
 ```
 
 Passi chiave:

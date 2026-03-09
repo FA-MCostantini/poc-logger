@@ -11,15 +11,15 @@
          failOnWarning="true">
     <testsuites>
         <testsuite name="unit">
-            <directory>tests/Unit</directory>
+            <directory>packages/php/tests/Unit</directory>
         </testsuite>
         <testsuite name="integration">
-            <directory>tests/Integration</directory>
+            <directory>packages/php/tests/Integration</directory>
         </testsuite>
     </testsuites>
     <source>
         <include>
-            <directory suffix=".php">src</directory>
+            <directory suffix=".php">packages/php/src</directory>
         </include>
     </source>
 </phpunit>

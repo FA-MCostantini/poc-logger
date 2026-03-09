@@ -9,7 +9,7 @@ COPY composer.json ./
 RUN composer install --no-interaction --no-progress
 
 COPY phpunit.xml phpstan.neon ./
-COPY src/ ./src/
-COPY tests/ ./tests/
+COPY packages/php/src/ ./packages/php/src/
+COPY packages/php/tests/ ./packages/php/tests/
 
 CMD ["vendor/bin/phpunit", "--testdox"]
